@@ -28,6 +28,7 @@ directional_shadow_max_distance = 333.8
 environment = SubResource("Environment_fx6er")
 
 [node name="CamHinge" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CamHinge"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 54)

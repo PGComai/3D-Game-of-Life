@@ -1,11 +1,15 @@
 extends Control
 
-@onready var ch = $SubViewportContainer/SubViewport/Node3D/CamHinge
-@onready var cm = $SubViewportContainer/SubViewport/Node3D/CamHinge/Camera3D
-@onready var gh = $SubViewportContainer/SubViewport/Node3D/GridHolder
+@onready var ch = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/CamHinge
+@onready var cm = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/CamHinge/Camera3D
+@onready var gh = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder
 @onready var gg = preload("res://GameGrid.tscn")
-@onready var slider1 = $leftBG/VBoxContainer/HBoxContainer/slider/VSlider1
-@onready var label1 = $leftBG/VBoxContainer/HBoxContainer/slider/Label1
+@onready var slider1 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1
+@onready var label1 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/Label1
+@onready var slider2 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2
+@onready var label2 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/Label2
+@onready var slider3 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/VSlider3
+@onready var label3 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/Label3
 
 var gm
 
@@ -14,16 +18,26 @@ var roty: float
 var rotx: float
 var q_reset: bool = false
 var rot: bool = false
+var slider1val: int
+var slider2val: int
+var slider3val: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cpz = cm.position.z
 	roty = ch.rotation.y
 	rotx = ch.rotation.x 
-	if get_node("SubViewportContainer/SubViewport/Node3D/GridHolder").get_child_count() > 0:
-		gm = $SubViewportContainer/SubViewport/Node3D/GridHolder.get_child(0)
+	if get_node("HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder").get_child_count() > 0:
+		gm = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder.get_child(0)
 		slider1.set_value_no_signal(gm.living_cell_lives_with_neighbors_min)
 		label1.text = str(gm.living_cell_lives_with_neighbors_min)
+		slider1val = gm.living_cell_lives_with_neighbors_min
+		slider2.set_value_no_signal(gm.living_cell_lives_with_neighbors_max)
+		label2.text = str(gm.living_cell_lives_with_neighbors_max)
+		slider2val = gm.living_cell_lives_with_neighbors_max
+		slider3.set_value_no_signal(gm.dead_cell_lives_with_neighbors)
+		label3.text = str(gm.dead_cell_lives_with_neighbors)
+		slider3val = gm.dead_cell_lives_with_neighbors
 
 func _input(event):
 	if event is InputEventMouseMotion and rot:
@@ -33,7 +47,6 @@ func _input(event):
 		roty = clamp(roty, cm.rotation.y-PI/4, cm.rotation.y+PI/4)
 	if event.is_action_pressed("middle_click"):
 		rot = true
-		print('rot')
 	if event.is_action_released("middle_click"):
 		rot = false
 	if event.is_action_pressed("stop") and gh.get_child_count() > 0:
@@ -43,7 +56,6 @@ func _input(event):
 			gm.stop = true
 	if event.is_action_pressed("reset"):
 		q_reset = true
-	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -58,9 +70,16 @@ func _process(delta):
 		var newgrid = gg.instantiate()
 		gh.add_child(newgrid)
 		gm = gh.get_child(0)
-		slider1.set_value_no_signal(gm.living_cell_lives_with_neighbors_min)
+		gm.living_cell_lives_with_neighbors_min = slider1val
+		gm.living_cell_lives_with_neighbors_max = slider2val
+		gm.dead_cell_lives_with_neighbors = slider3val
 		q_reset = false
 	label1.text = str(gm.living_cell_lives_with_neighbors_min)
+	label2.text = str(gm.living_cell_lives_with_neighbors_max)
+	label3.text = str(gm.dead_cell_lives_with_neighbors)
+	cam()
+	
+func cam():
 	# zoom and rotate
 	if Input.is_action_just_released('zin'):
 		cpz = cm.position.z - 10
@@ -77,3 +96,17 @@ func _process(delta):
 
 func _on_v_slider_1_value_changed(value):
 	gm.living_cell_lives_with_neighbors_min = value
+	slider1val = value
+
+func _on_button_pressed():
+	q_reset = true
+
+
+func _on_v_slider_2_value_changed(value):
+	gm.living_cell_lives_with_neighbors_max = value
+	slider2val = value
+
+
+func _on_v_slider_3_value_changed(value):
+	gm.dead_cell_lives_with_neighbors = value
+	slider3val = value
