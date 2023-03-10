@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://ff58wdbxv66o"]
+[gd_scene load_steps=9 format=3 uid="uid://ff58wdbxv66o"]
 
 [ext_resource type="PackedScene" uid="uid://jygj62ewkc24" path="res://game.tscn" id="1_61dwd"]
 [ext_resource type="Script" path="res://ux.gd" id="1_a2iyy"]
+[ext_resource type="StyleBox" uid="uid://dsettbwlng5eq" path="res://sliderStyle.tres" id="3_663gw"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lyue0"]
 
@@ -45,6 +46,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1350, 1350)
 render_target_update_mode = 4
@@ -60,7 +62,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.258824, 0.258824, 0.337255, 1)
+color = Color(0.027451, 0.0431373, 0.0784314, 1)
 
 [node name="leftBG" type="ColorRect" parent="."]
 layout_mode = 1
@@ -71,7 +73,7 @@ offset_top = 16.0
 offset_right = 384.0
 offset_bottom = -16.0
 grow_vertical = 2
-color = Color(0.447059, 0.505882, 0.658824, 1)
+color = Color(0.0823529, 0.109804, 0.164706, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="leftBG"]
 layout_mode = 1
@@ -120,8 +122,10 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/slider = ExtResource("3_663gw")
 max_value = 26.0
-tick_count = 26
+tick_count = 27
+ticks_on_borders = true
 
 [node name="slider2" type="VBoxContainer" parent="leftBG/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -138,8 +142,9 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/slider = ExtResource("3_663gw")
 max_value = 26.0
-tick_count = 26
+tick_count = 27
 
 [node name="slider3" type="VBoxContainer" parent="leftBG/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -156,8 +161,9 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/slider = ExtResource("3_663gw")
 max_value = 26.0
-tick_count = 26
+tick_count = 27
 
 [node name="gameBG" type="ColorRect" parent="."]
 z_index = -1
@@ -167,12 +173,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -704.0
-offset_top = -704.0
-offset_right = 704.0
-offset_bottom = 704.0
+offset_left = -675.0
+offset_top = -675.0
+offset_right = 675.0
+offset_bottom = 675.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.447059, 0.505882, 0.658824, 1)
+color = Color(0.0823529, 0.109804, 0.164706, 1)
 
 [connection signal="value_changed" from="leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="." method="_on_v_slider_1_value_changed"]

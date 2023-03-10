@@ -2,17 +2,15 @@
 
 [ext_resource type="PackedScene" uid="uid://ba5qbhews8yug" path="res://GameGrid.tscn" id="2_xfh4s"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_idwdt"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gkk3v"]
 
-[sub_resource type="Sky" id="Sky_h0hlw"]
-sky_material = SubResource("ProceduralSkyMaterial_idwdt")
+[sub_resource type="Sky" id="Sky_uxvc3"]
+sky_material = SubResource("ProceduralSkyMaterial_gkk3v")
 
 [sub_resource type="Environment" id="Environment_fx6er"]
-background_mode = 2
 background_color = Color(0.0901961, 0.0901961, 0.0901961, 1)
-sky = SubResource("Sky_h0hlw")
+sky = SubResource("Sky_uxvc3")
+ambient_light_source = 3
 tonemap_mode = 2
 ssil_enabled = true
 ssil_radius = 1.82
