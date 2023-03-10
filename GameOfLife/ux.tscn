@@ -1,9 +1,92 @@
-[gd_scene format=3 uid="uid://ff58wdbxv66o"]
+[gd_scene load_steps=4 format=3 uid="uid://ff58wdbxv66o"]
 
-[node name="UX" type="Control"]
+[ext_resource type="PackedScene" uid="uid://jygj62ewkc24" path="res://game.tscn" id="1_61dwd"]
+[ext_resource type="Script" path="res://ux.gd" id="1_a2iyy"]
+
+[sub_resource type="SystemFont" id="SystemFont_6oijq"]
+
+[node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_a2iyy")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -512.0
+offset_top = -512.0
+offset_right = 512.0
+offset_bottom = 512.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1024, 1024)
+render_target_update_mode = 4
+
+[node name="Node3D" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.258824, 0.258824, 0.337255, 1)
+
+[node name="leftBG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 384.0
+offset_bottom = -16.0
+grow_vertical = 2
+color = Color(0.447059, 0.505882, 0.658824, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="leftBG"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = SubResource("SystemFont_6oijq")
+theme_override_font_sizes/normal_font_size = 58
+text = "Parameters"
+fit_content = true
+
+[node name="gameBG" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -524.0
+offset_top = -524.0
+offset_right = 524.0
+offset_bottom = 524.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.447059, 0.505882, 0.658824, 1)

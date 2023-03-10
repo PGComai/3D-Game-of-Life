@@ -1,9 +1,11 @@
-extends Node3D
+extends Control
 
-@onready var ch = $CamHinge
-@onready var cm = $CamHinge/Camera3D
-@onready var gh = $GridHolder
+@onready var ch = $SubViewportContainer/SubViewport/Node3D/CamHinge
+@onready var cm = $SubViewportContainer/SubViewport/Node3D/CamHinge/Camera3D
+@onready var gh = $SubViewportContainer/SubViewport/Node3D/GridHolder
 @onready var gg = preload("res://GameGrid.tscn")
+
+var gm
 
 var cpz: float
 var roty: float
@@ -15,7 +17,29 @@ var rot: bool = false
 func _ready():
 	cpz = cm.position.z
 	roty = ch.rotation.y
-	rotx = ch.rotation.x
+	rotx = ch.rotation.x 
+	if get_node("SubViewportContainer/SubViewport/Node3D/GridHolder").get_child_count() > 0:
+		gm = $SubViewportContainer/SubViewport/Node3D/GridHolder.get_child(0)
+
+func _input(event):
+	if event is InputEventMouseMotion and rot:
+		roty += event.relative.x * 0.001
+		rotx += event.relative.y * 0.001
+		rotx = clamp(rotx, -PI/4, PI/4)
+		roty = clamp(roty, cm.rotation.y-PI/4, cm.rotation.y+PI/4)
+	if event.is_action_pressed("middle_click"):
+		rot = true
+		print('rot')
+	if event.is_action_released("middle_click"):
+		rot = false
+	if event.is_action_pressed("stop") and gh.get_child_count() > 0:
+		if gm.stop:
+			gm.stop = false
+		else:
+			gm.stop = true
+	if event.is_action_pressed("reset"):
+		q_reset = true
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -26,10 +50,11 @@ func _process(delta):
 	# reset the game grid
 	if q_reset and gh.get_child_count() > 0:
 		gh.get_child(0).queue_free()
-		q_reset = false
 	if gh.get_child_count() == 0:
 		var newgrid = gg.instantiate()
 		gh.add_child(newgrid)
+		gm = gh.get_child(0)
+		q_reset = false
 	# zoom and rotate
 	if Input.is_action_just_released('zin'):
 		cpz = cm.position.z - 10

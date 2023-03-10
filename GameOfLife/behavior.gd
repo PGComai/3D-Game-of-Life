@@ -7,6 +7,10 @@ extends GridMap
 
 var counter = 0
 var thread
+var stop: bool = false
+var go_color: Color = Color('f3836b')
+var stop_color: Color = Color('bda837')
+var msh = mesh_library.get_item_mesh(1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,10 +34,18 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if stop:
+		msh.material.albedo_color = stop_color
+		msh.radius = 0.5
+		msh.height = 1
+	else:
+		msh.material.albedo_color = go_color
+		msh.radius = 0.25
+		msh.height = 0.5
 	var result = 'not done'
-	if not thread.is_alive():
+	if not thread.is_alive() and not stop:
 		result = thread.wait_to_finish()
-	if result == 'done':
+	if result == 'done' and not stop:
 		thread.start(Callable(self, "_thread_function"))
 
 # Run here and exit.

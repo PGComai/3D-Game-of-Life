@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://jygj62ewkc24"]
+[gd_scene load_steps=5 format=3 uid="uid://jygj62ewkc24"]
 
-[ext_resource type="Script" path="res://game.gd" id="1_cwjk3"]
 [ext_resource type="PackedScene" uid="uid://ba5qbhews8yug" path="res://GameGrid.tscn" id="2_xfh4s"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_idwdt"]
@@ -20,7 +19,6 @@ ssil_radius = 1.82
 volumetric_fog_density = 0.0036
 
 [node name="Node3D" type="Node3D"]
-script = ExtResource("1_cwjk3")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
