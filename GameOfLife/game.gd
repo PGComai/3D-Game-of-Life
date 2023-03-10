@@ -9,26 +9,34 @@ var cpz: float
 var roty: float
 var rotx: float
 var q_reset: bool = false
+var rot: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	cpz = cm.position.z
 	roty = ch.rotation.y
 	rotx = ch.rotation.x
 
 func _unhandled_input(event):
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and rot:
 		roty += event.relative.x * 0.001
 		rotx += event.relative.y * 0.001
 		rotx = clamp(rotx, -PI/4, PI/4)
 		roty = clamp(roty, cm.rotation.y-PI/4, cm.rotation.y+PI/4)
 	if event.is_action_pressed("reset"):
 		q_reset = true
+	if event.is_action_pressed("middle_click"):
+		rot = true
+	if event.is_action_released("middle_click"):
+		rot = false
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if rot:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	# reset the game grid
 	if q_reset and gh.get_child_count() > 0:
 		gh.get_child(0).queue_free()
