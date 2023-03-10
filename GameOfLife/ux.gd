@@ -4,6 +4,8 @@ extends Control
 @onready var cm = $SubViewportContainer/SubViewport/Node3D/CamHinge/Camera3D
 @onready var gh = $SubViewportContainer/SubViewport/Node3D/GridHolder
 @onready var gg = preload("res://GameGrid.tscn")
+@onready var slider1 = $leftBG/VBoxContainer/HBoxContainer/slider/VSlider1
+@onready var label1 = $leftBG/VBoxContainer/HBoxContainer/slider/Label1
 
 var gm
 
@@ -20,6 +22,8 @@ func _ready():
 	rotx = ch.rotation.x 
 	if get_node("SubViewportContainer/SubViewport/Node3D/GridHolder").get_child_count() > 0:
 		gm = $SubViewportContainer/SubViewport/Node3D/GridHolder.get_child(0)
+		slider1.set_value_no_signal(gm.living_cell_lives_with_neighbors_min)
+		label1.text = str(gm.living_cell_lives_with_neighbors_min)
 
 func _input(event):
 	if event is InputEventMouseMotion and rot:
@@ -54,7 +58,9 @@ func _process(delta):
 		var newgrid = gg.instantiate()
 		gh.add_child(newgrid)
 		gm = gh.get_child(0)
+		slider1.set_value_no_signal(gm.living_cell_lives_with_neighbors_min)
 		q_reset = false
+	label1.text = str(gm.living_cell_lives_with_neighbors_min)
 	# zoom and rotate
 	if Input.is_action_just_released('zin'):
 		cpz = cm.position.z - 10
@@ -68,3 +74,6 @@ func _process(delta):
 		ch.rotation.x = lerp_angle(ch.rotation.x, ch.rotation.x - rotx, 0.05)
 	roty = lerp(roty, 0., 0.03)
 	rotx = lerp(rotx, 0., 0.03)
+
+func _on_v_slider_1_value_changed(value):
+	gm.living_cell_lives_with_neighbors_min = value
