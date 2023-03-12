@@ -1,0 +1,389 @@
+[gd_scene load_steps=16 format=3 uid="uid://bn7cqr462s74o"]
+
+[ext_resource type="PackedScene" uid="uid://d00tpeoapds2x" path="res://scenes/game.tscn" id="1_61dwd"]
+[ext_resource type="Script" path="res://scripts/ux.gd" id="1_a2iyy"]
+[ext_resource type="StyleBox" uid="uid://d0iywx4lms8bm" path="res://themes/roundSliderBox.tres" id="2_jcryu"]
+[ext_resource type="Theme" uid="uid://kfrvjeiyog0j" path="res://themes/theme1.tres" id="3_mfmo8"]
+[ext_resource type="AudioStream" uid="uid://c8ihlm0gtw70x" path="res://Sound/pop.wav" id="4_xvvy2"]
+[ext_resource type="Script" path="res://scripts/pop.gd" id="5_8e2ru"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lyue0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mgfkt"]
+font_size = 40
+font_color = Color(0.678431, 0.705882, 0.752941, 1)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.709804)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_hjiem"]
+color = Color(0.678431, 0.705882, 0.752941, 1)
+thickness = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_no4ar"]
+font_size = 32
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wphjr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_npm6i"]
+font_size = 26
+font_color = Color(0.678431, 0.705882, 0.752941, 1)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.709804)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bio5a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ede0e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pn3fk"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_a2iyy")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -3
+material = SubResource("CanvasItemMaterial_lyue0")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.027451, 0.0431373, 0.0784314, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="leftBG" type="ColorRect" parent="HBoxContainer"]
+z_index = 1
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.13
+mouse_filter = 2
+color = Color(0.0823529, 0.109804, 0.164706, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/leftBG"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0442177
+anchor_top = 0.0152778
+anchor_right = 0.955782
+anchor_bottom = 0.610417
+offset_top = -3.24249e-05
+offset_right = 9.15527e-05
+offset_bottom = 184.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+text = "Parameters"
+label_settings = SubResource("LabelSettings_mgfkt")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 26
+theme_override_styles/separator = SubResource("StyleBoxLine_hjiem")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+alignment = 1
+
+[node name="slider" type="VBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label1" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "x"
+label_settings = SubResource("LabelSettings_no4ar")
+horizontal_alignment = 1
+
+[node name="VSlider1" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/slider = ExtResource("2_jcryu")
+max_value = 26.0
+tick_count = 27
+ticks_on_borders = true
+
+[node name="slider2" type="VBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "x"
+label_settings = SubResource("LabelSettings_no4ar")
+horizontal_alignment = 1
+
+[node name="VSlider2" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/slider = ExtResource("2_jcryu")
+max_value = 26.0
+tick_count = 27
+ticks_on_borders = true
+
+[node name="slider3" type="VBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "x"
+label_settings = SubResource("LabelSettings_no4ar")
+horizontal_alignment = 1
+
+[node name="VSlider3" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/slider = ExtResource("2_jcryu")
+max_value = 26.0
+tick_count = 27
+ticks_on_borders = true
+
+[node name="HSeparator3" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 17
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
+
+[node name="WorldSize" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+text = "World Size: 30x30
+"
+horizontal_alignment = 1
+
+[node name="boundSlider" type="HSlider" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/slider = ExtResource("2_jcryu")
+min_value = 1.0
+max_value = 20.0
+step = 2.0
+value = 3.0
+tick_count = 20
+ticks_on_borders = true
+
+[node name="HSeparator6" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 17
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
+
+[node name="Button" type="Button" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_mfmo8")
+text = "Reset"
+
+[node name="HSeparator4" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 17
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
+
+[node name="Label2" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+text = "Graphics"
+label_settings = SubResource("LabelSettings_mgfkt")
+horizontal_alignment = 1
+
+[node name="HSeparator5" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 26
+theme_override_styles/separator = SubResource("StyleBoxLine_hjiem")
+
+[node name="shadowsHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Controls how nice the shadows look."
+alignment = 2
+
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Shadows"
+label_settings = SubResource("LabelSettings_npm6i")
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
+layout_mode = 2
+theme_override_constants/separation = 30
+theme_override_styles/separator = SubResource("StyleBoxEmpty_bio5a")
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_mfmo8")
+alignment = 1
+item_count = 3
+selected = 1
+popup/item_0/text = "High"
+popup/item_0/id = 0
+popup/item_1/text = "Med"
+popup/item_1/id = 1
+popup/item_2/text = "Low"
+popup/item_2/id = 2
+
+[node name="GraphicsSep" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
+
+[node name="AAHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Reduces sharp, pixelated edges."
+alignment = 2
+
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Antialiasing"
+label_settings = SubResource("LabelSettings_npm6i")
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
+layout_mode = 2
+theme_override_constants/separation = 30
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_mfmo8")
+alignment = 1
+item_count = 3
+selected = 1
+popup/item_0/text = "High"
+popup/item_0/id = 0
+popup/item_1/text = "Med"
+popup/item_1/id = 1
+popup/item_2/text = "Low"
+popup/item_2/id = 2
+
+[node name="GraphicsSep2" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
+
+[node name="ScalingHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Sets the resolution scale of the render window."
+alignment = 2
+
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Resolution"
+label_settings = SubResource("LabelSettings_npm6i")
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
+layout_mode = 2
+theme_override_constants/separation = 30
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
+
+[node name="scaling" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_mfmo8")
+alignment = 1
+item_count = 3
+selected = 1
+popup/item_0/text = "1.25x"
+popup/item_0/id = 0
+popup/item_1/text = "1x"
+popup/item_1/id = 1
+popup/item_2/text = "0.75x"
+popup/item_2/id = 2
+
+[node name="QuitSep" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
+
+[node name="Button2" type="Button" parent="HBoxContainer/leftBG/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme = ExtResource("3_mfmo8")
+text = "Quit
+"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+mouse_filter = 0
+
+[node name="gameBG" type="ColorRect" parent="HBoxContainer/AspectRatioContainer"]
+z_index = -1
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.0823529, 0.109804, 0.164706, 1)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer/AspectRatioContainer/gameBG"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1440, 1440)
+render_target_update_mode = 4
+
+[node name="Node3D" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]
+
+[node name="Audio" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("4_xvvy2")
+volume_db = -6.903
+pitch_scale = 0.39
+max_polyphony = 5
+script = ExtResource("5_8e2ru")
+
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="." method="_on_v_slider_1_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="Audio/AudioStreamPlayer" method="_on_v_slider_1_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2" to="." method="_on_v_slider_2_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2" to="Audio/AudioStreamPlayer" method="_on_v_slider_2_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/VSlider3" to="." method="_on_v_slider_3_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/VSlider3" to="Audio/AudioStreamPlayer" method="_on_v_slider_3_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/boundSlider" to="." method="_on_bound_slider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/leftBG/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="item_selected" from="HBoxContainer/leftBG/VBoxContainer/ScalingHbox/scaling" to="." method="_on_scaling_item_selected"]
+[connection signal="pressed" from="HBoxContainer/leftBG/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="mouse_entered" from="HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_exited"]

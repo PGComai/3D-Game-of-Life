@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://hfkmx8mg5mbk"]
+
+[ext_resource type="Script" path="res://scripts/gui.gd" id="1_dqtg5"]
+[ext_resource type="PackedScene" uid="uid://bn7cqr462s74o" path="res://scenes/ux.tscn" id="2_eefjq"]
+
+[node name="GUI" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_dqtg5")
+
+[node name="Control" parent="." node_paths=PackedStringArray("shortcut_context") instance=ExtResource("2_eefjq")]
+process_mode = 1
+shortcut_context = NodePath("..")
