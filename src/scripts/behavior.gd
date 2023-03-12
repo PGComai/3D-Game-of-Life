@@ -4,6 +4,7 @@ extends GridMap
 @export var living_cell_lives_with_neighbors_max: int = 5
 @export var dead_cell_lives_with_neighbors: int = 5
 @export var bounds: int = 10
+@export var min_time: float = 0.2
 
 var counter = 0
 var thread
@@ -11,6 +12,7 @@ var stop: bool = false
 var go_color: Color = Color('f3836b')
 var stop_color: Color = Color('bda837')
 var msh = mesh_library.get_item_mesh(1)
+var time: float = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -46,9 +48,11 @@ func _process(delta):
 		msh.radius = 0.25
 		msh.height = 0.5
 	var result = 'not done'
-	if not thread.is_alive() and not stop:
+	time += delta
+	if not thread.is_alive() and not stop and thread.is_started() and time >= min_time:
 		result = thread.wait_to_finish()
 	if result == 'done' and not stop:
+		time = 0
 		thread.start(Callable(self, "_thread_function"))
 
 # Run here and exit.

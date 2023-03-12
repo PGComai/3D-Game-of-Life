@@ -13,6 +13,10 @@ extends Control
 @onready var WorldSize = $HBoxContainer/leftBG/VBoxContainer/WorldSize
 @onready var BoundSlider = $HBoxContainer/leftBG/VBoxContainer/boundSlider
 @onready var subv = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport
+@onready var sun = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/DirectionalLight3D
+@onready var env = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/WorldEnvironment
+@onready var tick = $HBoxContainer/leftBG/VBoxContainer/tickslider
+@onready var tickLabel = $HBoxContainer/leftBG/VBoxContainer/TickTime
 
 var gm
 
@@ -26,6 +30,7 @@ var slider2val: int
 var slider3val: int
 var looking: bool = false
 var bound: int
+var sim_tick: float
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -43,6 +48,8 @@ func _ready():
 		slider3.set_value_no_signal(gm.dead_cell_lives_with_neighbors)
 		label3.text = str(gm.dead_cell_lives_with_neighbors)
 		slider3val = gm.dead_cell_lives_with_neighbors
+		tick.set_value_no_signal(gm.min_time)
+		tickLabel.text = 'Minimum Simulation Tick: ' + str(gm.min_time) + 's'
 		bound = gm.bounds
 		BoundSlider.set_value_no_signal(bound)
 		var boundstr = str(bound*2)
@@ -82,6 +89,7 @@ func _process(delta):
 		newgrid.living_cell_lives_with_neighbors_min = slider1val
 		newgrid.living_cell_lives_with_neighbors_max = slider2val
 		newgrid.dead_cell_lives_with_neighbors = slider3val
+		newgrid.min_time = sim_tick
 		gh.add_child(newgrid)
 		gm = gh.get_child(0)
 		# set new grid variables
@@ -146,3 +154,34 @@ func _on_scaling_item_selected(index):
 	else:
 		scale = 1.0
 	subv.scaling_3d_scale = scale
+
+func _on_aa_item_selected(index):
+	if index == 1:
+		subv.msaa_3d = 2
+	elif index == 0:
+		subv.msaa_3d = 4
+	else:
+		subv.msaa_3d = 0
+
+func _on_shadow_item_selected(index):
+	if index == 0:
+		sun.shadow_enabled = true
+		sun.directional_shadow_mode = 2
+		sun.shadow_bias = 0.1
+	elif index == 1:
+		sun.shadow_enabled = true
+		sun.directional_shadow_mode = 0
+		sun.shadow_bias = 0.02
+	else:
+		sun.shadow_enabled = false
+
+func _on_lighting_item_selected(index):
+	if index == 0:
+		env.environment.ssil_enabled = true
+	else:
+		env.environment.ssil_enabled = false
+
+func _on_tickslider_value_changed(value):
+	gm.min_time = value
+	tickLabel.text = 'Minimum Simulation Tick: ' + str(value) + 's'
+	sim_tick = value
