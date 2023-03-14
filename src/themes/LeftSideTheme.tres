@@ -1,0 +1,19 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://buebfocw76opc"]
+
+[ext_resource type="StyleBox" uid="uid://d0iywx4lms8bm" path="res://themes/roundSliderBox.tres" id="1_4ijhu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bo5ib"]
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.027451, 0.0431373, 0.0784314, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[resource]
+Button/styles/normal = SubResource("StyleBoxFlat_bo5ib")
+HSlider/styles/slider = ExtResource("1_4ijhu")
+Label/colors/font_color = Color(0.454902, 0.494118, 0.556863, 1)
+RichTextLabel/colors/default_color = Color(0.454902, 0.494118, 0.556863, 1)
+VSlider/styles/slider = ExtResource("1_4ijhu")

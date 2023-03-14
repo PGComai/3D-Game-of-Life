@@ -1,38 +1,33 @@
-[gd_scene load_steps=16 format=3 uid="uid://bn7cqr462s74o"]
+[gd_scene load_steps=16 format=3 uid="uid://bp8ynvnc2q5yr"]
 
 [ext_resource type="PackedScene" uid="uid://d00tpeoapds2x" path="res://scenes/game.tscn" id="1_61dwd"]
 [ext_resource type="Script" path="res://scripts/ux.gd" id="1_a2iyy"]
-[ext_resource type="StyleBox" uid="uid://d0iywx4lms8bm" path="res://themes/roundSliderBox.tres" id="2_jcryu"]
-[ext_resource type="Theme" uid="uid://kfrvjeiyog0j" path="res://themes/theme1.tres" id="3_mfmo8"]
+[ext_resource type="Theme" uid="uid://buebfocw76opc" path="res://themes/LeftSideTheme.tres" id="2_lfeh7"]
+[ext_resource type="LabelSettings" uid="uid://uey5gvvoky1t" path="res://themes/bigLabels.tres" id="3_h53ll"]
+[ext_resource type="LabelSettings" uid="uid://4cjg3daxlqop" path="res://themes/pLabels.tres" id="4_eu8v7"]
 [ext_resource type="AudioStream" uid="uid://c8ihlm0gtw70x" path="res://Sound/pop.wav" id="4_xvvy2"]
 [ext_resource type="Script" path="res://scripts/pop.gd" id="5_8e2ru"]
+[ext_resource type="LabelSettings" uid="uid://dir4bfm0u0cid" path="res://themes/graphicsLabels.tres" id="5_c5uhm"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lyue0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pn3fk"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_mgfkt"]
-font_size = 40
-font_color = Color(0.678431, 0.705882, 0.752941, 1)
-shadow_size = 6
-shadow_color = Color(0, 0, 0, 0.709804)
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_hjiem"]
-color = Color(0.678431, 0.705882, 0.752941, 1)
-thickness = 2
-
-[sub_resource type="LabelSettings" id="LabelSettings_no4ar"]
-font_size = 32
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wphjr"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_npm6i"]
-font_size = 26
-font_color = Color(0.678431, 0.705882, 0.752941, 1)
-shadow_size = 6
-shadow_color = Color(0, 0, 0, 0.709804)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bio5a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqkg4"]
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.027451, 0.0431373, 0.0784314, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="Theme" id="Theme_lv2aa"]
+Button/styles/normal = SubResource("StyleBoxFlat_nqkg4")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ede0e"]
 
@@ -66,26 +61,26 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="leftBG" type="ColorRect" parent="HBoxContainer"]
-z_index = 1
-custom_minimum_size = Vector2(250, 0)
+[node name="leftBG" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_stretch_ratio = 0.13
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/leftBG"]
+show_behind_parent = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.13
+size_flags_vertical = 3
 mouse_filter = 2
 color = Color(0.0823529, 0.109804, 0.164706, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/leftBG"]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -132.0
-offset_right = 132.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
 mouse_filter = 2
+theme = ExtResource("2_lfeh7")
 
 [node name="vBorder2" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
@@ -95,14 +90,8 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
 [node name="Label" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
 text = "Parameters"
-label_settings = SubResource("LabelSettings_mgfkt")
+label_settings = ExtResource("3_h53ll")
 horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 26
-theme_override_styles/separator = SubResource("StyleBoxLine_hjiem")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
@@ -118,22 +107,23 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 1
 text = "A"
-label_settings = SubResource("LabelSettings_no4ar")
+label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
 [node name="Label1" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "x"
-label_settings = SubResource("LabelSettings_no4ar")
+label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
 [node name="VSlider1" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/slider = ExtResource("2_jcryu")
 max_value = 26.0
+scrollable = false
 tick_count = 27
 ticks_on_borders = true
 
@@ -145,22 +135,23 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 1
 text = "B"
-label_settings = SubResource("LabelSettings_no4ar")
+label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "x"
-label_settings = SubResource("LabelSettings_no4ar")
+label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
 [node name="VSlider2" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/slider = ExtResource("2_jcryu")
 max_value = 26.0
+scrollable = false
 tick_count = 27
 ticks_on_borders = true
 
@@ -172,22 +163,23 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 1
 text = "C"
-label_settings = SubResource("LabelSettings_no4ar")
+label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
 [node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "x"
-label_settings = SubResource("LabelSettings_no4ar")
+label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
 [node name="VSlider3" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/slider = ExtResource("2_jcryu")
 max_value = 26.0
+scrollable = false
 tick_count = 27
 ticks_on_borders = true
 
@@ -204,11 +196,11 @@ horizontal_alignment = 1
 
 [node name="boundSlider" type="HSlider" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/slider = ExtResource("2_jcryu")
 min_value = 1.0
 max_value = 20.0
 step = 2.0
 value = 3.0
+scrollable = false
 tick_count = 20
 ticks_on_borders = true
 
@@ -224,11 +216,11 @@ horizontal_alignment = 1
 
 [node name="tickslider" type="HSlider" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/slider = ExtResource("2_jcryu")
 min_value = 0.1
 max_value = 1.0
 step = 0.1
 value = 0.1
+scrollable = false
 tick_count = 10
 ticks_on_borders = true
 
@@ -239,25 +231,18 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
 [node name="Button" type="Button" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_mfmo8")
-text = "Reset"
+text = "Reset Cells"
 
 [node name="HSeparator4" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="Label2" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Graphics" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
 text = "Graphics"
-label_settings = SubResource("LabelSettings_mgfkt")
+label_settings = ExtResource("3_h53ll")
 horizontal_alignment = 1
-
-[node name="HSeparator5" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 26
-theme_override_styles/separator = SubResource("StyleBoxLine_hjiem")
 
 [node name="shadowsHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
@@ -268,7 +253,7 @@ alignment = 2
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Shadows"
-label_settings = SubResource("LabelSettings_npm6i")
+label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
@@ -280,7 +265,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_bio5a")
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme = ExtResource("3_mfmo8")
+theme = SubResource("Theme_lv2aa")
 alignment = 1
 item_count = 3
 selected = 1
@@ -305,7 +290,7 @@ alignment = 2
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Antialiasing"
-label_settings = SubResource("LabelSettings_npm6i")
+label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
@@ -317,7 +302,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme = ExtResource("3_mfmo8")
+theme = SubResource("Theme_lv2aa")
 alignment = 1
 item_count = 3
 selected = 2
@@ -342,7 +327,7 @@ alignment = 2
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Resolution"
-label_settings = SubResource("LabelSettings_npm6i")
+label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
@@ -354,7 +339,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme = ExtResource("3_mfmo8")
+theme = SubResource("Theme_lv2aa")
 alignment = 1
 item_count = 3
 selected = 1
@@ -380,7 +365,7 @@ layout_mode = 2
 size_flags_horizontal = 2
 text = "Lighting
 "
-label_settings = SubResource("LabelSettings_npm6i")
+label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/LightingHbox2"]
@@ -392,7 +377,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme = ExtResource("3_mfmo8")
+theme = SubResource("Theme_lv2aa")
 alignment = 1
 item_count = 2
 selected = 1
@@ -406,24 +391,19 @@ layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Rules" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
 text = "Rules
 "
-label_settings = SubResource("LabelSettings_mgfkt")
+label_settings = ExtResource("3_h53ll")
 horizontal_alignment = 1
-
-[node name="HSeparator9" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 26
-theme_override_styles/separator = SubResource("StyleBoxLine_hjiem")
 
 [node name="Desc" type="RichTextLabel" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
 text = "There are two types of cells, full and empty. Each cell follows these rules:
 
 1. A full cell remains full if it has between A and B full neighbors. Otherwise it becomes empty.
+
 2. An empty cell becomes full if it has exactly C full neighbors."
 fit_content = true
 
@@ -435,7 +415,6 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
 [node name="Button2" type="Button" parent="HBoxContainer/leftBG/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
-theme = ExtResource("3_mfmo8")
 text = "Quit
 "
 
@@ -469,7 +448,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(1440, 1440)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]

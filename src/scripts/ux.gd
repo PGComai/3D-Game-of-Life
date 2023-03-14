@@ -72,6 +72,9 @@ func _input(event):
 			gm.stop = true
 	if event.is_action_pressed("reset"):
 		q_reset = true
+	if looking:
+		if event is InputEventPanGesture:
+			cpz = cm.position.y - event.delta.y
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -121,17 +124,27 @@ func cam():
 func _on_v_slider_1_value_changed(value):
 	gm.living_cell_lives_with_neighbors_min = value
 	slider1val = value
-
-func _on_button_pressed():
-	q_reset = true
+	if slider1val > slider2val:
+		gm.living_cell_lives_with_neighbors_max = slider1val
+		slider1.share(slider2)
+		slider2val = slider1val
+		slider1.unshare()
 
 func _on_v_slider_2_value_changed(value):
 	gm.living_cell_lives_with_neighbors_max = value
 	slider2val = value
+	if slider1val > slider2val:
+		gm.living_cell_lives_with_neighbors_min = slider2val
+		slider2.share(slider1)
+		slider1val = slider2val
+		slider2.unshare()
 
 func _on_v_slider_3_value_changed(value):
 	gm.dead_cell_lives_with_neighbors = value
 	slider3val = value
+
+func _on_button_pressed():
+	q_reset = true
 
 func _on_button_2_pressed():
 	get_tree().quit()

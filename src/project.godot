@@ -13,6 +13,8 @@ config_version=5
 config/name="GameOfLife"
 run/main_scene="res://scenes/gui.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
+config/macos_native_icon="res://extras/icon.icns"
+config/windows_native_icon="res://extras/icon.ico"
 
 [debug]
 
