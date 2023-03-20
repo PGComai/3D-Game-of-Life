@@ -1,0 +1,12 @@
+[gd_resource type="BoxMesh" load_steps=3 format=3 uid="uid://brbl5jleric6f"]
+
+[ext_resource type="Shader" uid="uid://eenuku2sgoxk" path="res://scenes/selectedShader.tres" id="1_ecgob"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oo0ls"]
+render_priority = 0
+shader = ExtResource("1_ecgob")
+shader_parameter/Base_Color = Color(0.176721, 0.693606, 0, 1)
+
+[resource]
+material = SubResource("ShaderMaterial_oo0ls")
+size = Vector3(2.1, 2.1, 2.1)

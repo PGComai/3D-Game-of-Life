@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SavedLayout" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/saved_layout.gd" id="1_lkjq1"]
+
+[resource]
+script = ExtResource("1_lkjq1")
+cells = PackedVector3Array(6, 3, 10, 6, 2, 9, 7, 2, 10, 7, 3, 10)
+name = "test7"
+description = "test7
+"

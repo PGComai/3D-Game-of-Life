@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bp8ynvnc2q5yr"]
+[gd_scene load_steps=17 format=3 uid="uid://bp8ynvnc2q5yr"]
 
 [ext_resource type="PackedScene" uid="uid://d00tpeoapds2x" path="res://scenes/game.tscn" id="1_61dwd"]
 [ext_resource type="Script" path="res://scripts/ux.gd" id="1_a2iyy"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://c8ihlm0gtw70x" path="res://Sound/pop.wav" id="4_xvvy2"]
 [ext_resource type="Script" path="res://scripts/pop.gd" id="5_8e2ru"]
 [ext_resource type="LabelSettings" uid="uid://dir4bfm0u0cid" path="res://themes/graphicsLabels.tres" id="5_c5uhm"]
+[ext_resource type="Script" path="res://scenes/SaveList.gd" id="7_4yiv5"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lyue0"]
 
@@ -424,10 +425,10 @@ theme_override_constants/separation = 20
 theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 2
-mouse_filter = 0
 
 [node name="gameBG" type="ColorRect" parent="HBoxContainer/AspectRatioContainer"]
 z_index = -1
@@ -448,10 +449,77 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(2, 2)
+physics_object_picking = true
+size = Vector2i(1440, 1440)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]
+
+[node name="rightBG" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/rightBG"]
+show_behind_parent = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+color = Color(0.0823529, 0.109804, 0.164706, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/rightBG"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/rightBG/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_lfeh7")
+
+[node name="topBorder" type="HSeparator" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
+
+[node name="Label" type="Label" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Saves"
+label_settings = ExtResource("3_h53ll")
+horizontal_alignment = 1
+
+[node name="border" type="HSeparator" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="SaveList" type="VBoxContainer" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("7_4yiv5")
+
+[node name="border2" type="HSeparator" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
+
+[node name="SaveButton" type="Button" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+disabled = true
+text = "Save Selection"
 
 [node name="Audio" type="Control" parent="."]
 anchors_preset = 0
@@ -465,6 +533,8 @@ pitch_scale = 0.39
 max_polyphony = 5
 script = ExtResource("5_8e2ru")
 
+[connection signal="go" from="." to="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_go"]
+[connection signal="stop" from="." to="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_stop"]
 [connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="." method="_on_v_slider_1_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="Audio/AudioStreamPlayer" method="_on_v_slider_1_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2" to="." method="_on_v_slider_2_value_changed"]
@@ -481,3 +551,4 @@ script = ExtResource("5_8e2ru")
 [connection signal="pressed" from="HBoxContainer/leftBG/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="mouse_entered" from="HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_entered"]
 [connection signal="mouse_exited" from="HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_exited"]
+[connection signal="pressed" from="HBoxContainer/rightBG/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]

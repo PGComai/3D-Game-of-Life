@@ -1,9 +1,17 @@
 extends Control
 
+signal save_requested
+signal stop
+signal go
+
+@onready var save_layout_template = preload("res://resources/saved_layout.gd")
+@onready var gg = preload("res://scenes/GameGrid.tscn")
+@onready var save_popup = preload("res://scenes/save_popup.tscn")
+@onready var all_saves = preload("res://resources/all_saves.tres")
+
 @onready var ch = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/CamHinge
 @onready var cm = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/CamHinge/Camera3D
 @onready var gh = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder
-@onready var gg = preload("res://scenes/GameGrid.tscn")
 @onready var slider1 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1
 @onready var label1 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/Label1
 @onready var slider2 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2
@@ -17,6 +25,10 @@ extends Control
 @onready var env = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/WorldEnvironment
 @onready var tick = $HBoxContainer/leftBG/VBoxContainer/tickslider
 @onready var tickLabel = $HBoxContainer/leftBG/VBoxContainer/TickTime
+@onready var selection = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/SelectionGrid
+@onready var saveButton = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/SaveButton
+@onready var aspect_ratio_container = $HBoxContainer/AspectRatioContainer
+@onready var save_list = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/ScrollContainer/SaveList
 
 var gm
 
@@ -31,9 +43,16 @@ var slider3val: int
 var looking: bool = false
 var bound: int
 var sim_tick: float
+var selecting: bool = false
+var cells_to_save: Array[Vector3i]
+
+var saver = ResourceSaver
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	selection.save_cells.connect(_on_selection_save_cells)
+	selection.selected.connect(_on_selection_selected)
+	selection.not_selected.connect(_on_selection_not_selected)
 	cpz = cm.position.z
 	roty = ch.rotation.y
 	rotx = ch.rotation.x 
@@ -55,7 +74,7 @@ func _ready():
 		var boundstr = str(bound*2)
 		WorldSize.text = 'World Size: ' + boundstr + 'x' + boundstr
 
-func _input(event):
+func _unhandled_input(event):
 	if event is InputEventMouseMotion and rot and looking:
 		roty += event.relative.x * 0.001
 		rotx += event.relative.y * 0.001
@@ -67,8 +86,10 @@ func _input(event):
 		rot = false
 	if event.is_action_pressed("stop") and gh.get_child_count() > 0:
 		if gm.stop:
+			emit_signal('go')
 			gm.stop = false
 		else:
+			emit_signal('stop')
 			gm.stop = true
 	if event.is_action_pressed("reset"):
 		q_reset = true
@@ -103,6 +124,10 @@ func _process(delta):
 	var boundstr = str(bound*2)
 	WorldSize.text = 'World Size: ' + boundstr + 'x' + boundstr
 	cam()
+	saveButton.disabled = !selecting
+	
+func _physics_process(delta):
+	pass
 	
 func cam():
 	# zoom and rotate
@@ -198,3 +223,50 @@ func _on_tickslider_value_changed(value):
 	gm.min_time = value
 	tickLabel.text = 'Minimum Simulation Tick: ' + str(value) + 's'
 	sim_tick = value
+	
+func _on_selection_save_cells(cells):
+	# this is where the saving starts
+	cells_to_save = cells
+	var pop = save_popup.instantiate()
+	pop.save_confirmed.connect(_on_pop_save_confirmed)
+	aspect_ratio_container.add_child(pop)
+	
+func _on_pop_save_confirmed(title: String, desc: String):
+	# this is where the saving continues
+	print(cells_to_save)
+	var info = make_map_save_info(cells_to_save)
+	print(info)
+	var new_layout = save_layout_template.new()
+	new_layout.cells = cells_to_save
+	new_layout.name = title
+	new_layout.description = desc
+	saver.save(new_layout, "res://saved_files/%s.tres" % title, 0)
+	var saved_resource = load("res://saved_files/%s.tres" % title)
+	all_saves.saved_layouts.append(saved_resource)
+	saver.save(all_saves, all_saves.resource_path, 0)
+	save_list.refresh()
+
+func _on_selection_selected():
+	selecting = true
+
+func _on_selection_not_selected():
+	selecting = false
+
+func _on_save_button_pressed():
+	emit_signal("save_requested")
+
+func make_map_save_info(points: Array[Vector3i]):
+	var tx = 0
+	var ty = 0
+	var tz = 0
+	for p in points:
+		tx += p.x
+		ty += p.y
+		tz += p.z
+	var arr_len = len(points)
+	var center = Vector3i(tx/arr_len, ty/arr_len, tz/arr_len)
+	var dists = []
+	for p in points:
+		dists.append(Vector3(p).distance_squared_to(Vector3(center)))
+	var max_dist = sqrt(dists.max())
+	return [center,max_dist]

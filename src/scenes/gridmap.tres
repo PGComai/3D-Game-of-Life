@@ -1,0 +1,8 @@
+[gd_resource type="VisualShader" format=3 uid="uid://pjtip052moin"]
+
+[resource]
+code = "shader_type spatial;
+
+
+"
+nodes/fragment/0/position = Vector2(2020, 100)

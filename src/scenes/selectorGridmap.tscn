@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1i2mfmlmgdfh"]
+
+[ext_resource type="BoxMesh" uid="uid://brbl5jleric6f" path="res://textures/realSelector.tres" id="1_h0teu"]
+
+[node name="Node" type="Node"]
+
+[node name="selector" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_h0teu")
