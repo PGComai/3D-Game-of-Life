@@ -12,8 +12,6 @@
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lyue0"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pn3fk"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wphjr"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bio5a"]
@@ -31,6 +29,8 @@ corner_radius_bottom_left = 15
 Button/styles/normal = SubResource("StyleBoxFlat_nqkg4")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ede0e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pn3fk"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -63,62 +63,58 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="leftBG" type="ScrollContainer" parent="HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_stretch_ratio = 0.13
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/leftBG"]
-show_behind_parent = true
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/leftBG"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/leftBG/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
-color = Color(0.0823529, 0.109804, 0.164706, 1)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/leftBG"]
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 3
-mouse_filter = 2
 theme = ExtResource("2_lfeh7")
 
-[node name="vBorder2" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
-
-[node name="Label" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Parameters"
 label_settings = ExtResource("3_h53ll")
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 alignment = 1
 
-[node name="slider" type="VBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer"]
+[node name="slider" type="VBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label2" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
+[node name="Label2" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "A"
 label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
-[node name="Label1" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
+[node name="SliderVal1" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "x"
 label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
-[node name="VSlider1" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider"]
+[node name="VSlider1" type="VSlider" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -128,25 +124,25 @@ scrollable = false
 tick_count = 27
 ticks_on_borders = true
 
-[node name="slider2" type="VBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer"]
+[node name="slider2" type="VBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "B"
 label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
+[node name="SliderVal2" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "x"
 label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
-[node name="VSlider2" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2"]
+[node name="VSlider2" type="VSlider" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -156,25 +152,25 @@ scrollable = false
 tick_count = 27
 ticks_on_borders = true
 
-[node name="slider3" type="VBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer"]
+[node name="slider3" type="VBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label4" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
+[node name="Label4" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "C"
 label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
+[node name="SliderVal3" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "x"
 label_settings = ExtResource("4_eu8v7")
 horizontal_alignment = 1
 
-[node name="VSlider3" type="VSlider" parent="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3"]
+[node name="VSlider3" type="VSlider" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -184,18 +180,18 @@ scrollable = false
 tick_count = 27
 ticks_on_borders = true
 
-[node name="HSeparator3" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="HSeparator3" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="WorldSize" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="WorldSize" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "World Size: 30x30
 "
 horizontal_alignment = 1
 
-[node name="boundSlider" type="HSlider" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="boundSlider" type="HSlider" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 min_value = 1.0
 max_value = 20.0
@@ -205,17 +201,17 @@ scrollable = false
 tick_count = 20
 ticks_on_borders = true
 
-[node name="HSeparator6" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="HSeparator6" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="TickTime" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="TickTime" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Minimum Simulation Tick: 0.2s"
 horizontal_alignment = 1
 
-[node name="tickslider" type="HSlider" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="tickslider" type="HSlider" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 min_value = 0.1
 max_value = 1.0
@@ -225,44 +221,44 @@ scrollable = false
 tick_count = 10
 ticks_on_borders = true
 
-[node name="HSeparator8" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="HSeparator8" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="Button" type="Button" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Button" type="Button" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Reset Cells"
 
-[node name="HSeparator4" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="HSeparator4" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="Graphics" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Graphics" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Graphics"
 label_settings = ExtResource("3_h53ll")
 horizontal_alignment = 1
 
-[node name="shadowsHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="shadowsHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Controls how nice the shadows look."
 alignment = 2
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/shadowsHbox"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Shadows"
 label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/shadowsHbox"]
 layout_mode = 2
 theme_override_constants/separation = 30
 theme_override_styles/separator = SubResource("StyleBoxEmpty_bio5a")
 
-[node name="shadow" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/shadowsHbox"]
+[node name="shadow" type="OptionButton" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/shadowsHbox"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -277,29 +273,29 @@ popup/item_1/id = 1
 popup/item_2/text = "Off"
 popup/item_2/id = 2
 
-[node name="GraphicsSep" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="GraphicsSep" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="AAHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="AAHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Reduces sharp, pixelated edges."
 alignment = 2
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Antialiasing"
 label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox"]
 layout_mode = 2
 theme_override_constants/separation = 30
 theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
 
-[node name="aa" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/AAHbox"]
+[node name="aa" type="OptionButton" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -314,29 +310,29 @@ popup/item_1/id = 1
 popup/item_2/text = "Off"
 popup/item_2/id = 2
 
-[node name="GraphicsSep2" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="GraphicsSep2" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="ScalingHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="ScalingHbox" type="HBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Sets the resolution scale of the render window."
 alignment = 2
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/ScalingHbox"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Resolution"
 label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/ScalingHbox"]
 layout_mode = 2
 theme_override_constants/separation = 30
 theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
 
-[node name="scaling" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/ScalingHbox"]
+[node name="scaling" type="OptionButton" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/ScalingHbox"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -351,17 +347,17 @@ popup/item_1/id = 1
 popup/item_2/text = "0.75x"
 popup/item_2/id = 2
 
-[node name="GraphicsSep3" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="GraphicsSep3" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="LightingHbox2" type="HBoxContainer" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="LightingHbox2" type="HBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Sets the resolution scale of the render window."
 alignment = 2
 
-[node name="Label3" type="Label" parent="HBoxContainer/leftBG/VBoxContainer/LightingHbox2"]
+[node name="Label3" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/LightingHbox2"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Lighting
@@ -369,12 +365,12 @@ text = "Lighting
 label_settings = ExtResource("5_c5uhm")
 horizontal_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/VBoxContainer/LightingHbox2"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/LightingHbox2"]
 layout_mode = 2
 theme_override_constants/separation = 30
 theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
 
-[node name="lighting" type="OptionButton" parent="HBoxContainer/leftBG/VBoxContainer/LightingHbox2"]
+[node name="lighting" type="OptionButton" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/LightingHbox2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -387,19 +383,19 @@ popup/item_0/id = 0
 popup/item_1/text = "Fast"
 popup/item_1/id = 1
 
-[node name="HSeparator7" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="HSeparator7" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="Rules" type="Label" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Rules" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Rules
 "
 label_settings = ExtResource("3_h53ll")
 horizontal_alignment = 1
 
-[node name="Desc" type="RichTextLabel" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Desc" type="RichTextLabel" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "There are two types of cells, full and empty. Each cell follows these rules:
 
@@ -408,21 +404,24 @@ text = "There are two types of cells, full and empty. Each cell follows these ru
 2. An empty cell becomes full if it has exactly C full neighbors."
 fit_content = true
 
-[node name="QuitSep" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="QuitSep" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 40
 theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
 
-[node name="Button2" type="Button" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="Button2" type="Button" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 text = "Quit
 "
 
-[node name="vBorder" type="HSeparator" parent="HBoxContainer/leftBG/VBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/leftBG"]
+show_behind_parent = true
 layout_mode = 2
-theme_override_constants/separation = 20
-theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+color = Color(0.0823529, 0.109804, 0.164706, 1)
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer"]
 custom_minimum_size = Vector2(400, 400)
@@ -456,9 +455,9 @@ render_target_update_mode = 4
 [node name="Node3D" parent="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]
 
 [node name="rightBG" type="ScrollContainer" parent="HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 4
 
 [node name="ColorRect" type="ColorRect" parent="HBoxContainer/rightBG"]
 show_behind_parent = true
@@ -472,20 +471,15 @@ color = Color(0.0823529, 0.109804, 0.164706, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/rightBG/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_lfeh7")
-
-[node name="topBorder" type="HSeparator" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-theme_override_styles/separator = SubResource("StyleBoxEmpty_pn3fk")
 
 [node name="Label" type="Label" parent="HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -533,22 +527,23 @@ pitch_scale = 0.39
 max_polyphony = 5
 script = ExtResource("5_8e2ru")
 
+[connection signal="build" from="." to="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_build"]
 [connection signal="go" from="." to="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_go"]
 [connection signal="stop" from="." to="HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_stop"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="." method="_on_v_slider_1_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1" to="Audio/AudioStreamPlayer" method="_on_v_slider_1_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2" to="." method="_on_v_slider_2_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2" to="Audio/AudioStreamPlayer" method="_on_v_slider_2_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/VSlider3" to="." method="_on_v_slider_3_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/VSlider3" to="Audio/AudioStreamPlayer" method="_on_v_slider_3_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/boundSlider" to="." method="_on_bound_slider_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/leftBG/VBoxContainer/tickslider" to="." method="_on_tickslider_value_changed"]
-[connection signal="pressed" from="HBoxContainer/leftBG/VBoxContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="item_selected" from="HBoxContainer/leftBG/VBoxContainer/shadowsHbox/shadow" to="." method="_on_shadow_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/leftBG/VBoxContainer/AAHbox/aa" to="." method="_on_aa_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/leftBG/VBoxContainer/ScalingHbox/scaling" to="." method="_on_scaling_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/leftBG/VBoxContainer/LightingHbox2/lighting" to="." method="_on_lighting_item_selected"]
-[connection signal="pressed" from="HBoxContainer/leftBG/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/VSlider1" to="." method="_on_v_slider_1_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/VSlider1" to="Audio/AudioStreamPlayer" method="_on_v_slider_1_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/VSlider2" to="." method="_on_v_slider_2_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/VSlider2" to="Audio/AudioStreamPlayer" method="_on_v_slider_2_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3" to="." method="_on_v_slider_3_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3" to="Audio/AudioStreamPlayer" method="_on_v_slider_3_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/boundSlider" to="." method="_on_bound_slider_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/tickslider" to="." method="_on_tickslider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="item_selected" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/shadowsHbox/shadow" to="." method="_on_shadow_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox/aa" to="." method="_on_aa_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/ScalingHbox/scaling" to="." method="_on_scaling_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/LightingHbox2/lighting" to="." method="_on_lighting_item_selected"]
+[connection signal="pressed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="mouse_entered" from="HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_entered"]
 [connection signal="mouse_exited" from="HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_exited"]
 [connection signal="pressed" from="HBoxContainer/rightBG/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]

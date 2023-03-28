@@ -2,6 +2,7 @@ extends GridMap
 
 signal mark_cell(cell_to_mark)
 signal clear_cell(cell_to_clear)
+signal send_bounds(b)
 
 @export var living_cell_lives_with_neighbors_min: int = 2
 @export var living_cell_lives_with_neighbors_max: int = 5
@@ -12,6 +13,7 @@ signal clear_cell(cell_to_clear)
 var counter = 0
 var thread
 var stop: bool = false
+var build: bool = false
 var go_color: Color = Color('f3836b')
 var stop_color: Color = Color('bda837')
 var msh = mesh_library.get_item_mesh(1)
@@ -20,9 +22,12 @@ var n3d
 var full_cell_array: Array
 var empty_cell_array: Array
 var expanding_search_exclude: Array
+var buildCursor: Vector3i
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	emit_signal("send_bounds", bounds)
+	### get this signal to work with bound adjustments ###
 	n3d = get_parent().get_parent()
 	n3d.rayHit.connect(_on_node3d_rayhit)
 	# make border
@@ -70,6 +75,15 @@ func _process(delta):
 			set_cell_item(f,0)
 		full_cell_array = result[1]
 		empty_cell_array = result[2]
+#	if build:
+#		for e in empty_cell_array:
+#			if Vector3i(e) != buildCursor:
+#				set_cell_item(e,-1)
+#		for f in full_cell_array:
+#			if Vector3i(f) != buildCursor:
+#				set_cell_item(f,0)
+#		set_cell_item(buildCursor,2)
+#		print(buildCursor)
 
 # Run here and exit.
 # The argument is the userdata passed from start().
@@ -184,6 +198,24 @@ func find_nearest_living_cell(location, del):
 func _on_node3d_rayhit(loc, del):
 	var hit = local_to_map(loc)
 	find_nearest_living_cell(hit, del)
+
+#func _on_node3d_buildRay(loc):
+#	var hit = local_to_map(loc)
+#	var to_clear = get_used_cells_by_item(2)
+#	var occupied = get_used_cells_by_item(0)
+#	for tc in to_clear:
+#		if tc in occupied or tc == hit:
+#			pass
+#		else:
+#			set_cell_item(tc,-1)
+#	var hitbounds = bounds - 1
+#	hit.x = clamp(hit.x,-hitbounds,hitbounds)
+#	hit.y = clamp(hit.y,-hitbounds,hitbounds)
+#	hit.z = clamp(hit.z,-hitbounds,hitbounds)
+#	buildCursor = hit
+	
+func clear_build_cursor():
+	pass
 	
 func expanding_search(cell: Vector3i, exclude: Array = [], del: bool = false):
 	for fc in full_cell_array:

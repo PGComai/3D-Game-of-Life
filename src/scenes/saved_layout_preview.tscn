@@ -1,7 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://dyqfsx3tgx0cb"]
+[gd_scene load_steps=12 format=3 uid="uid://dyqfsx3tgx0cb"]
 
 [ext_resource type="Script" path="res://scenes/saved_layout_preview.gd" id="1_6msik"]
 [ext_resource type="PackedScene" uid="uid://cjgm4iamq1dkq" path="res://scenes/miniGrid.tscn" id="1_iwxt2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yanp"]
+bg_color = Color(0.027451, 0.0431373, 0.0784314, 1)
+shadow_size = 3
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lw6c3"]
 sky_top_color = Color(1, 1, 1, 1)
@@ -11,6 +15,8 @@ sky_material = SubResource("ProceduralSkyMaterial_lw6c3")
 radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_xito2"]
+background_mode = 1
+background_color = Color(0.027451, 0.0431373, 0.0784314, 1)
 sky = SubResource("Sky_2w77o")
 ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
@@ -18,11 +24,19 @@ ambient_light_color = Color(1, 1, 1, 1)
 [sub_resource type="World3D" id="World3D_hva5g"]
 environment = SubResource("Environment_xito2")
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ws5pp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3qyy"]
+bg_color = Color(0.0823529, 0.109804, 0.164706, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_6lefd"]
+font_size = 20
+
 [sub_resource type="LabelSettings" id="LabelSettings_8ujcf"]
-font_size = 12
+font_size = 14
 
 [node name="Panel" type="Panel"]
-custom_minimum_size = Vector2(250, 150)
+custom_minimum_size = Vector2(400, 250)
 anchors_preset = -1
 anchor_right = 0.0976563
 anchor_bottom = 0.104167
@@ -30,6 +44,7 @@ offset_right = -210.0
 offset_bottom = -110.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7yanp")
 script = ExtResource("1_6msik")
 metadata/_edit_use_anchors_ = true
 
@@ -45,17 +60,14 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
-layout_mode = 2
-color = Color(0.282407, 0.282407, 0.282407, 1)
-
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
+size_flags_stretch_ratio = 1.77
+stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="MarginContainer/HBoxContainer/SubViewportContainer"]
 own_world_3d = true
@@ -63,32 +75,48 @@ world_3d = SubResource("World3D_hva5g")
 transparent_bg = true
 handle_input_locally = false
 gui_disable_input = true
-size = Vector2i(130, 130)
+size = Vector2i(235, 230)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="MarginContainer/HBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("1_iwxt2")]
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ws5pp")
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_styles/panel = SubResource("StyleBoxFlat_l3qyy")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Title" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="MarginContainer/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 text = "Title"
+label_settings = SubResource("LabelSettings_6lefd")
+autowrap_mode = 3
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Desc" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="Desc" type="Label" parent="MarginContainer/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 text = "Description"

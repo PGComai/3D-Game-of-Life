@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://4cpj6eubsdff"]
+
+[ext_resource type="Script" path="res://scenes/planeGrid.gd" id="1_srlqs"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_6kyde"]
+_surfaces = [{
+"aabb": AABB(-1, -1, 0, 2, 2, 1e-05),
+"format": 4097,
+"index_count": 5,
+"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 3, 0, 0, 0),
+"primitive": 2,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 128, 191, 0, 0, 128, 191, 0, 0, 0, 0, 0, 0, 128, 191, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 191, 0, 0, 0, 0)
+}, {
+"aabb": AABB(-1, -1, 0, 2, 2, 1e-05),
+"format": 4097,
+"index_count": 5,
+"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 3, 0, 0, 0),
+"primitive": 2,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 128, 191, 0, 0, 128, 191, 0, 0, 0, 0, 0, 0, 128, 191, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 191, 0, 0, 0, 0)
+}]
+
+[node name="Node" type="Node"]
+
+[node name="gridSquare" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_6kyde")
+script = ExtResource("1_srlqs")

@@ -18,6 +18,6 @@ func refresh():
 		var loaded_resource = load(res.resource_path)
 		var new_preview = preview.instantiate()
 		new_preview.cells = loaded_resource.cells
-		new_preview.title = loaded_resource.name
-		new_preview.desc = loaded_resource.description
+		new_preview.t_name = loaded_resource.name
+		new_preview.t_desc = loaded_resource.description
 		add_child(new_preview)

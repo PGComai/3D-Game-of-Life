@@ -3,6 +3,7 @@ extends Control
 signal save_requested
 signal stop
 signal go
+signal build
 
 @onready var save_layout_template = preload("res://resources/saved_layout.gd")
 @onready var gg = preload("res://scenes/GameGrid.tscn")
@@ -12,26 +13,25 @@ signal go
 @onready var ch = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/CamHinge
 @onready var cm = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/CamHinge/Camera3D
 @onready var gh = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder
-@onready var slider1 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/VSlider1
-@onready var label1 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider/Label1
-@onready var slider2 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/VSlider2
-@onready var label2 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider2/Label2
-@onready var slider3 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/VSlider3
-@onready var label3 = $HBoxContainer/leftBG/VBoxContainer/HBoxContainer/slider3/Label3
-@onready var WorldSize = $HBoxContainer/leftBG/VBoxContainer/WorldSize
-@onready var BoundSlider = $HBoxContainer/leftBG/VBoxContainer/boundSlider
+@onready var slider1 = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/VSlider1
+@onready var label1 = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/SliderVal1
+@onready var slider2 = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/VSlider2
+@onready var label2 = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/SliderVal2
+@onready var slider3 = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3
+@onready var label3 = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/SliderVal3
+@onready var WorldSize = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/WorldSize
+@onready var BoundSlider = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/boundSlider
 @onready var subv = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport
 @onready var sun = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/DirectionalLight3D
 @onready var env = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/WorldEnvironment
-@onready var tick = $HBoxContainer/leftBG/VBoxContainer/tickslider
-@onready var tickLabel = $HBoxContainer/leftBG/VBoxContainer/TickTime
+@onready var tick = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/tickslider
+@onready var tickLabel = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/TickTime
 @onready var selection = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/SelectionGrid
 @onready var saveButton = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/SaveButton
 @onready var aspect_ratio_container = $HBoxContainer/AspectRatioContainer
 @onready var save_list = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/ScrollContainer/SaveList
 
 var gm
-
 var cpz: float
 var roty: float
 var rotx: float
@@ -88,9 +88,19 @@ func _unhandled_input(event):
 		if gm.stop:
 			emit_signal('go')
 			gm.stop = false
+			gm.build = false
 		else:
 			emit_signal('stop')
 			gm.stop = true
+	if event.is_action_pressed("build") and gh.get_child_count() > 0:
+		if gm.stop:
+			emit_signal("build")
+			gm.build = !gm.build
+		else:
+			emit_signal('stop')
+			gm.stop = true
+			emit_signal("build")
+			gm.build = !gm.build
 	if event.is_action_pressed("reset"):
 		q_reset = true
 	if looking:

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AllSaves" load_steps=12 format=3 uid="uid://bbbvliy8r3gnk"]
+[gd_resource type="Resource" script_class="AllSaves" load_steps=14 format=3 uid="uid://bkl8yp3xbloup"]
 
 [ext_resource type="Script" path="res://resources/all_saves.gd" id="1_8u3l7"]
 [ext_resource type="Resource" path="res://saved_files/test8.tres" id="1_a7qss"]
@@ -11,7 +11,9 @@
 [ext_resource type="Resource" path="res://saved_files/test15.tres" id="8_aroai"]
 [ext_resource type="Resource" path="res://saved_files/test16.tres" id="9_2h3mw"]
 [ext_resource type="Resource" path="res://saved_files/test17.tres" id="10_kaxbp"]
+[ext_resource type="Resource" path="res://saved_files/saving is now working.tres" id="11_sd023"]
+[ext_resource type="Resource" path="res://saved_files/name.tres" id="12_xebrd"]
 
 [resource]
 script = ExtResource("1_8u3l7")
-saved_layouts = Array[Resource("res://resources/saved_layout.gd")]([ExtResource("1_a7qss"), ExtResource("2_0pc35"), ExtResource("3_ps74v"), ExtResource("4_8eg6w"), ExtResource("5_sgh33"), ExtResource("6_qtlyq"), ExtResource("7_11laf"), ExtResource("8_aroai"), ExtResource("9_2h3mw"), ExtResource("10_kaxbp")])
+saved_layouts = Array[Resource("res://resources/saved_layout.gd")]([ExtResource("1_a7qss"), ExtResource("2_0pc35"), ExtResource("3_ps74v"), ExtResource("4_8eg6w"), ExtResource("5_sgh33"), ExtResource("6_qtlyq"), ExtResource("7_11laf"), ExtResource("8_aroai"), ExtResource("9_2h3mw"), ExtResource("10_kaxbp"), ExtResource("11_sd023"), ExtResource("12_xebrd")])
