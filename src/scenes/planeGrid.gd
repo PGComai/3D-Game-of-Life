@@ -9,10 +9,10 @@ func _ready():
 	var verts = PackedVector3Array()
 	var indices = PackedInt32Array()
 
-	verts.append(Vector3(-1,-1,0))
-	verts.append(Vector3(-1,1,0))
-	verts.append(Vector3(1,1,0))
-	verts.append(Vector3(1,-1,0))
+	verts.append(Vector3(-1,0,-1))
+	verts.append(Vector3(-1,0,1))
+	verts.append(Vector3(1,0,1))
+	verts.append(Vector3(1,0,-1))
 	
 	indices.append(0)
 	indices.append(1)

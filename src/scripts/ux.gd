@@ -30,6 +30,7 @@ signal build
 @onready var saveButton = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/SaveButton
 @onready var aspect_ratio_container = $HBoxContainer/AspectRatioContainer
 @onready var save_list = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/ScrollContainer/SaveList
+@onready var node_3d = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D
 
 var gm
 var cpz: float
@@ -75,7 +76,7 @@ func _ready():
 		WorldSize.text = 'World Size: ' + boundstr + 'x' + boundstr
 
 func _unhandled_input(event):
-	if event is InputEventMouseMotion and rot and looking:
+	if event is InputEventMouseMotion and rot and looking and not node_3d.y_adjust:
 		roty += event.relative.x * 0.001
 		rotx += event.relative.y * 0.001
 		rotx = clamp(rotx, -PI/4, PI/4)
@@ -85,6 +86,7 @@ func _unhandled_input(event):
 	if event.is_action_released("middle_click"):
 		rot = false
 	if event.is_action_pressed("stop") and gh.get_child_count() > 0:
+		node_3d.y_adjust = false
 		if gm.stop:
 			emit_signal('go')
 			gm.stop = false
@@ -93,6 +95,7 @@ func _unhandled_input(event):
 			emit_signal('stop')
 			gm.stop = true
 	if event.is_action_pressed("build") and gh.get_child_count() > 0:
+		node_3d.y_adjust = false
 		if gm.stop:
 			emit_signal("build")
 			gm.build = !gm.build
@@ -102,6 +105,7 @@ func _unhandled_input(event):
 			emit_signal("build")
 			gm.build = !gm.build
 	if event.is_action_pressed("reset"):
+		node_3d.y_adjust = false
 		q_reset = true
 	if looking:
 		if event is InputEventPanGesture:
@@ -153,8 +157,8 @@ func cam():
 	if !is_equal_approx(rotx,0):
 		ch.rotation.x = lerp_angle(ch.rotation.x, ch.rotation.x - rotx, 0.05)
 	ch.rotation.x = clamp(ch.rotation.x, -PI/2, PI/2)
-	roty = lerp(roty, 0., 0.03)
-	rotx = lerp(rotx, 0., 0.03)
+	roty = lerp(roty, 0.0, 0.03)
+	rotx = lerp(rotx, 0.0, 0.03)
 
 func _on_v_slider_1_value_changed(value):
 	gm.living_cell_lives_with_neighbors_min = value

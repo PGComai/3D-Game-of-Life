@@ -9,12 +9,12 @@ func _ready():
 	var indices = PackedInt32Array()
 
 	var r = range(-4,5,2)
-	var z = 0
+	var y = 0
 	for x in r:
-		for y in r:
+		for z in r:
 			var vec = Vector3(x,y,z)
 			verts.append(vec)
-	for y in r:
+	for z in r:
 		for x in r:
 			var vec = Vector3(x,y,z)
 			verts.append(vec)

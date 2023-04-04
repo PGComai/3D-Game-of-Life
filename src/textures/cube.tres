@@ -3,6 +3,8 @@
 [ext_resource type="FastNoiseLite" uid="uid://wv0y2jk3esae" path="res://textures/cubeTexNoise.tres" id="1_g0uyk"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vn774"]
+width = 64
+height = 64
 as_normal_map = true
 bump_strength = 0.5
 noise = ExtResource("1_g0uyk")

@@ -16,8 +16,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if node_3d.build:
-		check_cam_angles()
+	pass
+	#self.shape.size = Vector3(bounds,1,bounds)
+#	plane_grid_map.rotation = Vector3(PI/2,0,0)
+#	plane_grid_map.position = Vector3(0,1,0)
 
 func check_cam_angles():
 	var facing: Vector3 = cam.get_camera_transform().basis.z
@@ -58,5 +60,3 @@ func check_cam_angles():
 		plane_grid_map.position = Vector3(-1,0,0)
 		#print('looking left')
 
-func _on_grid_holder_child_entered_tree(node):
-	bounds = node.bounds * 40

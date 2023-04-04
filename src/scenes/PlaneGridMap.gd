@@ -16,7 +16,7 @@ func _on_grid_holder_child_entered_tree(node):
 
 func make_grid():
 	var b1 = bounds
-	var z = 0
+	var y = 0
 	for x in range(-b1,b1):
-		for y in range(-b1,b1):
+		for z in range(-b1,b1):
 			set_cell_item(Vector3i(x,y,z), 0)
