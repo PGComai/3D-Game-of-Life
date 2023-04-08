@@ -30,6 +30,7 @@ func _ready():
 	### get this signal to work with bound adjustments ###
 	n3d = get_parent().get_parent()
 	n3d.rayHit.connect(_on_node3d_rayhit)
+	n3d.build_new_block.connect(_on_node3d_build_new_block)
 	# make border
 	var b1 = bounds
 	for x in range(-b1-1,b1+1):
@@ -198,6 +199,18 @@ func find_nearest_living_cell(location, del):
 func _on_node3d_rayhit(loc, del):
 	var hit = local_to_map(loc)
 	find_nearest_living_cell(hit, del)
+	
+func _on_node3d_build_new_block(loc):
+	var new_loc = local_to_map(loc)
+	var hitbounds = bounds - 1
+	new_loc.x = clamp(new_loc.x,-hitbounds-1,hitbounds)
+	new_loc.y = clamp(new_loc.y,-hitbounds-1,hitbounds)
+	new_loc.z = clamp(new_loc.z,-hitbounds-1,hitbounds)
+	if new_loc not in full_cell_array:
+		print('newblock')
+		full_cell_array.append(new_loc)
+		set_cell_item(new_loc,0)
+		
 
 #func _on_node3d_buildRay(loc):
 #	var hit = local_to_map(loc)

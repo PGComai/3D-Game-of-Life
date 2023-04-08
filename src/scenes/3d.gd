@@ -3,12 +3,12 @@ extends Node3D
 signal rayHit(loc, del)
 signal buildRay(loc)
 signal adjust_build_cube_y(y)
+signal build_new_block(loc)
 
 @export var cursor_loc: Vector3i
 
 @onready var cam = $CamHinge/Camera3D
 @onready var bg = $BuildGrid
-@onready var building_grid_mesh = $BuildingPlane/buildingGridMesh
 @onready var plane_grid_map = $BuildingPlane/PlaneGridMap
 @onready var control = $"../../../../../.."
 @onready var building_plane = $BuildingPlane
@@ -66,10 +66,12 @@ func _physics_process(delta):
 					target = target.snapped(Vector3(2,2,2))
 					target -= Vector3(1,-0.5,1)
 				emit_signal("buildRay", Vector3i(target))
+				if Input.is_action_pressed("click"):
+					#add block
+					emit_signal("build_new_block", Vector3i(target))
 	
 	bg.visible = build
 	plane_grid_map.visible = build
-	#building_grid_mesh.visible = build
 
 func pointer(coll_layer):
 	var spaceState = get_world_3d().direct_space_state
