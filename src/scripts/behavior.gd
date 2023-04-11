@@ -23,6 +23,7 @@ var full_cell_array: Array
 var empty_cell_array: Array
 var expanding_search_exclude: Array
 var buildCursor: Vector3i
+var done: bool
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -31,6 +32,7 @@ func _ready():
 	n3d = get_parent().get_parent()
 	n3d.rayHit.connect(_on_node3d_rayhit)
 	n3d.build_new_block.connect(_on_node3d_build_new_block)
+	n3d.delete_block.connect(_on_node3d_delete_block)
 	# make border
 	var b1 = bounds
 	for x in range(-b1-1,b1+1):
@@ -66,16 +68,19 @@ func _process(delta):
 	time += delta
 	if not thread.is_alive() and not stop and thread.is_started() and time >= min_time:
 		result = thread.wait_to_finish()
+		#done = false
 	if result and not stop:
 		time = 0
 		thread.start(Callable(self, "_thread_function"))
-	if result:
+	if result:# and not done:
+		print('result')
 		for e in result[2]:
 			set_cell_item(e,-1)
 		for f in result[1]:
 			set_cell_item(f,0)
 		full_cell_array = result[1]
 		empty_cell_array = result[2]
+		#done = true
 #	if build:
 #		for e in empty_cell_array:
 #			if Vector3i(e) != buildCursor:
@@ -209,7 +214,20 @@ func _on_node3d_build_new_block(loc):
 	if new_loc not in full_cell_array:
 		print('newblock')
 		full_cell_array.append(new_loc)
+		empty_cell_array.erase(new_loc)
 		set_cell_item(new_loc,0)
+		
+func _on_node3d_delete_block(loc):
+	var new_loc = local_to_map(loc)
+	var hitbounds = bounds - 1
+	new_loc.x = clamp(new_loc.x,-hitbounds-1,hitbounds)
+	new_loc.y = clamp(new_loc.y,-hitbounds-1,hitbounds)
+	new_loc.z = clamp(new_loc.z,-hitbounds-1,hitbounds)
+	if new_loc not in empty_cell_array:
+		print('deleteblock')
+		full_cell_array.erase(new_loc)
+		empty_cell_array.append(new_loc)
+		set_cell_item(new_loc,-1)
 		
 
 #func _on_node3d_buildRay(loc):

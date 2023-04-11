@@ -36,6 +36,7 @@ func _on_control_go():
 	clear_cursor()
 
 func _on_grid_map_mark_cell(cell_to_mark):
+	print('mark cell')
 	set_cell_item(cell_to_mark, 0)
 
 func _on_grid_map_clear_cell(cell_to_clear):

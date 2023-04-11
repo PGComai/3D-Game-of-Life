@@ -3,7 +3,6 @@ extends GridMap
 signal wall_go_here(loc)
 
 @onready var grid_holder = $"../GridHolder"
-@onready var building_grid_mesh = $"../BuildingPlane/buildingGridMesh"
 @onready var node_3d = $".."
 
 var buildCursor: Vector3i
@@ -17,7 +16,6 @@ func _ready():
 func _process(delta):
 	if node_3d.build:
 		set_cell_item(buildCursor,0)
-		building_grid_mesh.global_position = map_to_local(buildCursor)
 
 func _on_node_3d_build_ray(loc):
 	var hit = local_to_map(loc)

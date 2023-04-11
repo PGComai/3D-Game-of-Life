@@ -2,7 +2,6 @@ extends CollisionShape3D
 
 @onready var cam = $"../../CamHinge/Camera3D"
 @onready var grid_holder = $"../../GridHolder"
-@onready var buildingMesh = $"../buildingGridMesh"
 @onready var node_3d = $"../.."
 @onready var plane_grid_map = $"../PlaneGridMap"
 

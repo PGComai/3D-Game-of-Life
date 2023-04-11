@@ -4,6 +4,7 @@ signal rayHit(loc, del)
 signal buildRay(loc)
 signal adjust_build_cube_y(y)
 signal build_new_block(loc)
+signal delete_block(loc)
 
 @export var cursor_loc: Vector3i
 
@@ -65,10 +66,14 @@ func _physics_process(delta):
 					target += Vector3(1,-1,1)
 					target = target.snapped(Vector3(2,2,2))
 					target -= Vector3(1,-0.5,1)
-				emit_signal("buildRay", Vector3i(target))
+				var t = Vector3i(target)
+				emit_signal("buildRay", t)
 				if Input.is_action_pressed("click"):
 					#add block
-					emit_signal("build_new_block", Vector3i(target))
+					emit_signal("build_new_block", t)
+				elif Input.is_action_pressed("rclick"):
+					#delete block
+					emit_signal("delete_block", t)
 	
 	bg.visible = build
 	plane_grid_map.visible = build
