@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfsfw5foanffn"]
+
+[ext_resource type="Script" path="res://img3d testing.gd" id="1_dxnax"]
+
+[node name="img3d testing" type="Node3D"]
+script = ExtResource("1_dxnax")

@@ -9,6 +9,8 @@ signal send_bounds(b)
 @export var dead_cell_lives_with_neighbors: int = 5
 @export var bounds: int = 10
 @export var min_time: float = 0.2
+@export_enum('CPU','GPU') var compute_type: int = 0
+@export var img: ImageTexture3D
 
 var counter = 0
 var thread
@@ -24,6 +26,8 @@ var empty_cell_array: Array
 var expanding_search_exclude: Array
 var buildCursor: Vector3i
 var done: bool
+
+var imgTexArray: Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -50,12 +54,24 @@ func _ready():
 	for c in get_used_cells_by_item(0):
 		if c.x >= b1 or c.x <= -b1-1 or c.y >= b1 or c.y <= -b1-1 or c.z >= b1 or c.z <= -b1-1:
 			set_cell_item(c,-1)
+	imgTexArray = make_array_from_gm()
+	img = ImageTexture3D.new()
+	print(img.get_rid())
+	img.create(Image.FORMAT_RGBA8, bounds*2, bounds*2, bounds*2, false, imgTexArray)
+	#print(imgTexArray)
 	thread = Thread.new()
 	# Third argument is optional userdata, it can be any variable.
 	thread.start(Callable(self, "_thread_function"),Thread.PRIORITY_HIGH)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if compute_type == 0:
+		_cpu_powered(delta)
+	else:
+		pass
+		#_gpu_powered()
+
+func _cpu_powered(delta):
 	if stop:
 		msh.material.albedo_color = stop_color
 		msh.radius = 0.5
@@ -73,7 +89,6 @@ func _process(delta):
 		time = 0
 		thread.start(Callable(self, "_thread_function"))
 	if result:# and not done:
-		print('result')
 		for e in result[2]:
 			set_cell_item(e,-1)
 		for f in result[1]:
@@ -90,6 +105,27 @@ func _process(delta):
 #				set_cell_item(f,0)
 #		set_cell_item(buildCursor,2)
 #		print(buildCursor)
+
+func _gpu_powered():
+	if !img:
+		pass
+		#img = ImageTexture3D.new().create(Image.FORMAT_RGBA8, bounds*2, bounds*2, bounds*2, false, )
+
+func make_array_from_gm():
+	var arr = []
+	for x in range(-bounds,bounds):
+		arr.append([Image])
+		for y in range(-bounds,bounds):
+			arr[x+bounds].append([])
+			for z in range(-bounds,bounds):
+				var loc = Vector3(x,y,z)
+				var item = get_cell_item(loc)
+				if item == 0:
+					# cell is full
+					arr[x+bounds][y+bounds].append(Color(1,1,1,1))
+				elif item == -1:
+					arr[x+bounds][y+bounds].append(Color(0,0,0,1))
+	return arr
 
 # Run here and exit.
 # The argument is the userdata passed from start().

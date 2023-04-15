@@ -10,9 +10,6 @@ bump_strength = 0.5
 noise = ExtResource("1_g0uyk")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0kmiw"]
-metallic = 0.26
-roughness = 0.7
-normal_enabled = true
 normal_scale = 0.15
 normal_texture = SubResource("NoiseTexture2D_vn774")
 clearcoat_roughness = 0.05
