@@ -22,7 +22,7 @@ var build: bool = false
 var go_color: Color = Color('f3836b')
 var stop_color: Color = Color('bda837')
 var msh = mesh_library.get_item_mesh(1)
-var time: float = 0
+var time: float = 0.0
 var n3d
 var full_cell_array: Array
 var empty_cell_array: Array
@@ -69,6 +69,16 @@ func _ready():
 	for c in get_used_cells_by_item(0):
 		if c.x >= b1 or c.x <= -b1-1 or c.y >= b1 or c.y <= -b1-1 or c.z >= b1 or c.z <= -b1-1:
 			set_cell_item(c,-1)
+	for x in range(-bounds,bounds):
+		for y in range(-bounds,bounds):
+			for z in range(-bounds,bounds):
+				var loc = Vector3(x,y,z)
+				var item = get_cell_item(loc)
+				if item == 0:
+					# cell is full
+					full_cell_array.append(loc)
+				elif item == -1:
+					empty_cell_array.append(loc)
 	img2d = make_img2d_from_gm()
 	testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(img2d)
 	#print(img2d.get_size())
@@ -166,23 +176,31 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if compute_type == 0:
-		_cpu_powered(delta)
-	else:
-		_gpu_powered()
-
-func _cpu_powered(delta):
+	#print(len(full_cell_array)+len(empty_cell_array))
+	time += delta
+	#print(time)
 	if stop:
 		msh.material.albedo_color = stop_color
 	else:
 		msh.material.albedo_color = go_color
+	
+	if time < min_time:
+		pass
+	else:
+		time = 0.0
+		if compute_type == 0:
+			_cpu_powered()
+		elif compute_type == 1:
+			if not stop:
+				_gpu_powered()
+
+func _cpu_powered():
 	var result = false
-	time += delta
-	if not thread.is_alive() and not stop and thread.is_started() and time >= min_time:
+	if not thread.is_alive() and not stop and thread.is_started():
 		result = thread.wait_to_finish()
 		#done = false
 	if result and not stop:
-		time = 0
+		time = 0.0
 		thread.start(Callable(self, "_thread_function"))
 	if result:# and not done:
 		for e in result[2]:
@@ -192,46 +210,37 @@ func _cpu_powered(delta):
 		full_cell_array = result[1]
 		empty_cell_array = result[2]
 		#done = true
-	if build:
-		for e in empty_cell_array:
-			if Vector3i(e) != buildCursor:
-				set_cell_item(e,-1)
-		for f in full_cell_array:
-			if Vector3i(f) != buildCursor:
-				set_cell_item(f,0)
-		set_cell_item(buildCursor,2)
-		print(buildCursor)
 
 func _gpu_powered():
-	if fmod(comp_frame_count, 5.0) == 0.0:
-		var pf32a = PackedFloat32Array([living_cell_lives_with_neighbors_min,living_cell_lives_with_neighbors_max,dead_cell_lives_with_neighbors])
-		var tba = pf32a.to_byte_array()
+	#if fmod(comp_frame_count, 5.0) == 0.0:
+	var pf32a = PackedFloat32Array([living_cell_lives_with_neighbors_min,living_cell_lives_with_neighbors_max,dead_cell_lives_with_neighbors])
+	var tba = pf32a.to_byte_array()
 
-		# Create a storage buffer that can hold our float values.
-		# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
-		#buffer = rd.storage_buffer_create(input_bytes.size(), input_bytes)
-		
-		rd.buffer_update(buffer, 0, tba.size(), tba)
-		
-		rd.texture_update(texture_read, 0, read_data)
-		# Start compute list to start recording our compute commands
-		var compute_list := rd.compute_list_begin()
-		# Bind the pipeline, this tells the GPU what shader to use
-		rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
-		# Binds the uniform set with the data we want to give our shader
-		rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
-		var wgsize = bounds*2
-		rd.compute_list_dispatch(compute_list, wgsize, wgsize, wgsize)
-		rd.compute_list_end()  # Tell the GPU we are done with this compute task
-		rd.submit()  # Force the GPU to start our commands
-		rd.sync()  # Force the CPU to wait for the GPU to finish with the recorded commands
+	# Create a storage buffer that can hold our float values.
+	# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
+	#buffer = rd.storage_buffer_create(input_bytes.size(), input_bytes)
+	
+	rd.buffer_update(buffer, 0, tba.size(), tba)
+	
+	rd.texture_update(texture_read, 0, read_data)
+	# Start compute list to start recording our compute commands
+	var compute_list := rd.compute_list_begin()
+	# Bind the pipeline, this tells the GPU what shader to use
+	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
+	# Binds the uniform set with the data we want to give our shader
+	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	var wgsize = bounds*2
+	rd.compute_list_dispatch(compute_list, wgsize, wgsize, wgsize)
+	rd.compute_list_end()  # Tell the GPU we are done with this compute task
+	rd.submit()  # Force the GPU to start our commands
+	rd.sync()  # Force the CPU to wait for the GPU to finish with the recorded commands
 
-		# Now we can grab our data from the texture
-		read_data = rd.texture_get_data(texture_write, 0)
-		var image := Image.create_from_data(image_size.x, image_size.y, false, image_format, read_data)
-		testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(image)
-		_make_gm_from_img2d(image)
-	comp_frame_count += 1
+	# Now we can grab our data from the texture
+	read_data = rd.texture_get_data(texture_write, 0)
+	var image := Image.create_from_data(image_size.x, image_size.y, false, image_format, read_data)
+	testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(image)
+	_make_gm_from_img2d(image)
+	#comp_frame_count += 1
 
 func make_img2d_from_gm():
 	# make long form image instead of deep image
@@ -244,16 +253,18 @@ func make_img2d_from_gm():
 		for x in range(-bounds,bounds):
 			for y in range(-bounds,bounds):
 				var loc = Vector3(x,y,z)
-				var item = get_cell_item(loc)
-				if item == 0:
+				#var item = get_cell_item(loc)
+				if full_cell_array.has(loc):
 					# cell is full
 					arrimg.set_pixelv(Vector2i(x+bounds+z_offset,y+bounds), Color.WHITE)
-				elif item == -1:
+				else:
 					arrimg.set_pixelv(Vector2i(x+bounds+z_offset,y+bounds), Color.BLACK)
 		zidx += 1
 	return arrimg
 	
 func _make_gm_from_img2d(img: Image):
+	var empties = []
+	var fulls = []
 	# make long form image instead of deep image
 	# y stays the same but x increases by 2*bounds(?) to represent new z slice
 	var zidx = 0
@@ -266,9 +277,13 @@ func _make_gm_from_img2d(img: Image):
 				var val = img.get_pixelv(imgloc)
 				if val == Color.BLACK:
 					set_cell_item(loc, -1)
+					empties.append(loc)
 				else:
 					set_cell_item(loc, 0)
+					fulls.append(loc)
 		zidx += 1
+	full_cell_array = fulls
+	empty_cell_array = empties
 
 # Run here and exit.
 # The argument is the userdata passed from start().
@@ -296,6 +311,8 @@ func _thread_function():
 				else:
 					if counter == dead_cell_lives_with_neighbors:
 						fulls.append(loc)
+					else:
+						empties.append(loc)
 #	for e in empties:
 #		set_cell_item(e,-1)
 #	for f in fulls:
