@@ -194,11 +194,11 @@ horizontal_alignment = 1
 [node name="boundSlider" type="HSlider" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 min_value = 1.0
-max_value = 20.0
+max_value = 50.0
 step = 2.0
 value = 3.0
 scrollable = false
-tick_count = 20
+tick_count = 25
 ticks_on_borders = true
 
 [node name="HSeparator6" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
@@ -222,6 +222,27 @@ tick_count = 10
 ticks_on_borders = true
 
 [node name="HSeparator8" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 17
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
+
+[node name="cpu_gpu_box" type="HBoxContainer" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box"]
+layout_mode = 2
+text = "GPU Compute Mode:"
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="compute" type="CheckButton" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HSeparator9" type="HSeparator" parent="HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
@@ -538,6 +559,7 @@ script = ExtResource("5_8e2ru")
 [connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3" to="Audio/AudioStreamPlayer" method="_on_v_slider_3_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/boundSlider" to="." method="_on_bound_slider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/tickslider" to="." method="_on_tickslider_value_changed"]
+[connection signal="toggled" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box/compute" to="." method="_on_compute_toggled"]
 [connection signal="pressed" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="item_selected" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/shadowsHbox/shadow" to="." method="_on_shadow_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox/aa" to="." method="_on_aa_item_selected"]

@@ -31,6 +31,7 @@ signal build
 @onready var aspect_ratio_container = $HBoxContainer/AspectRatioContainer
 @onready var save_list = $HBoxContainer/rightBG/MarginContainer/VBoxContainer/ScrollContainer/SaveList
 @onready var node_3d = $HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D
+@onready var compute = $HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box/compute
 
 var gm
 var cpz: float
@@ -46,6 +47,7 @@ var bound: int
 var sim_tick: float
 var selecting: bool = false
 var cells_to_save: Array[Vector3i]
+var compute_mode: int
 
 var saver = ResourceSaver
 
@@ -74,6 +76,11 @@ func _ready():
 		BoundSlider.set_value_no_signal(bound)
 		var boundstr = str(bound*2)
 		WorldSize.text = 'World Size: ' + boundstr + 'x' + boundstr
+		compute_mode = gm.compute_type
+		if compute_mode == 0:
+			compute.set_pressed_no_signal(false)
+		else:
+			compute.set_pressed_no_signal(true)
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and rot and looking and not node_3d.y_adjust:
@@ -128,6 +135,7 @@ func _process(delta):
 		newgrid.living_cell_lives_with_neighbors_max = slider2val
 		newgrid.dead_cell_lives_with_neighbors = slider3val
 		newgrid.min_time = sim_tick
+		newgrid.compute_type = compute_mode
 		gh.add_child(newgrid)
 		gm = gh.get_child(0)
 		# set new grid variables
@@ -150,7 +158,7 @@ func cam():
 			cpz = cm.position.z - 10
 		if Input.is_action_just_released('zout'):
 			cpz = cm.position.z + 10
-	cpz = clamp(cpz, 5, 120)
+	cpz = clamp(cpz, 5, 250)
 	cm.position.z = lerp(cm.position.z, cpz, 0.1)
 	if !is_equal_approx(roty,0):
 		ch.rotation.y = lerp_angle(ch.rotation.y, ch.rotation.y - roty, 0.05)
@@ -198,14 +206,14 @@ func _on_bound_slider_value_changed(value):
 	bound = value
 
 func _on_scaling_item_selected(index):
-	var scale: float
+	var _scale: float
 	if index == 0:
-		scale = 1.25
+		_scale = 1.25
 	elif index == 2:
-		scale = 0.75
+		_scale = 0.75
 	else:
-		scale = 1.0
-	subv.scaling_3d_scale = scale
+		_scale = 1.0
+	subv.scaling_3d_scale = _scale
 
 func _on_aa_item_selected(index):
 	if index == 1:
@@ -284,3 +292,10 @@ func make_map_save_info(points: Array[Vector3i]):
 		dists.append(Vector3(p).distance_squared_to(Vector3(center)))
 	var max_dist = sqrt(dists.max())
 	return [center,max_dist]
+
+
+func _on_compute_toggled(button_pressed):
+	if button_pressed:
+		compute_mode = 1
+	else:
+		compute_mode = 0

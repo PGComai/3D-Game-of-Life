@@ -10,7 +10,10 @@ signal send_bounds(b)
 @export var bounds: int = 10
 @export var min_time: float = 0.2
 @export_enum('CPU','GPU') var compute_type: int = 0
-@export var img: ImageTexture3D
+@export var img2d: Image
+
+@onready var comp = preload("res://comp.glsl")
+@onready var testmesh = $testmesh
 
 var counter = 0
 var thread
@@ -27,7 +30,19 @@ var expanding_search_exclude: Array
 var buildCursor: Vector3i
 var done: bool
 
+var rd: RenderingDevice
 var imgTexArray: Array
+var comp_frame_count: int = 0
+var texture_read: RID
+var texture_write: RID
+var read_data: PackedByteArray
+var write_data: PackedByteArray
+var buffer: RID
+var shader: RID
+var uniform_set: RID
+var pipeline: RID
+var image_format := Image.FORMAT_RGBA8
+var image_size: Vector2i
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -54,32 +69,113 @@ func _ready():
 	for c in get_used_cells_by_item(0):
 		if c.x >= b1 or c.x <= -b1-1 or c.y >= b1 or c.y <= -b1-1 or c.z >= b1 or c.z <= -b1-1:
 			set_cell_item(c,-1)
-	imgTexArray = make_array_from_gm()
-	img = ImageTexture3D.new()
-	print(img.get_rid())
-	img.create(Image.FORMAT_RGBA8, bounds*2, bounds*2, bounds*2, false, imgTexArray)
-	#print(imgTexArray)
-	thread = Thread.new()
-	# Third argument is optional userdata, it can be any variable.
-	thread.start(Callable(self, "_thread_function"),Thread.PRIORITY_HIGH)
+	img2d = make_img2d_from_gm()
+	testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(img2d)
+	#print(img2d.get_size())
+	if compute_type == 0:
+		thread = Thread.new()
+		# Third argument is optional userdata, it can be any variable.
+		thread.start(Callable(self, "_thread_function"),Thread.PRIORITY_HIGH)
+	else:
+		rd = RenderingServer.create_local_rendering_device()
+		if not rd:
+			set_process(false)
+			print("Compute shaders are not available")
+			return
+		
+		# Create shader and pipeline
+		var shader_spirv := comp.get_spirv()
+		shader = rd.shader_create_from_spirv(shader_spirv)
+		pipeline = rd.compute_pipeline_create(shader)
+
+		var og_image := img2d
+		og_image.convert(image_format)
+		image_size = og_image.get_size()
+
+		# Data for compute shaders has to come as an array of bytes
+		# Initialize read data
+		read_data = og_image.get_data()
+
+		var tex_read_format := RDTextureFormat.new()
+		tex_read_format.width = image_size.x
+		tex_read_format.height = image_size.y
+		tex_read_format.depth = 4
+		tex_read_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
+		tex_read_format.usage_bits = (
+			RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
+			| RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT
+		)
+		var tex_view := RDTextureView.new()
+		texture_read = rd.texture_create(tex_read_format, tex_view, [read_data])
+
+		# Create uniform set using the read texture
+		var read_uniform := RDUniform.new()
+		read_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+		read_uniform.binding = 0
+		read_uniform.add_id(texture_read)
+
+		# Initialize write data
+		write_data = PackedByteArray()
+		write_data.resize(read_data.size())
+
+		var tex_write_format := RDTextureFormat.new()
+		tex_write_format.width = image_size.x
+		tex_write_format.height = image_size.y
+		tex_write_format.depth = 4
+		tex_write_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
+		tex_write_format.usage_bits = (
+			RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
+			| RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT
+			| RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
+		)
+		texture_write = rd.texture_create(tex_write_format, tex_view, [write_data])
+
+		# Create uniform set using the write texture
+		var write_uniform := RDUniform.new()
+		write_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+		write_uniform.binding = 1
+		write_uniform.add_id(texture_write)
+		
+		# Prepare our data. We use floats in the shader, so we need 32 bit.
+		var input := PackedFloat32Array([living_cell_lives_with_neighbors_min,living_cell_lives_with_neighbors_max,dead_cell_lives_with_neighbors])
+		var input_bytes := input.to_byte_array()
+
+		# Create a storage buffer that can hold our float values.
+		# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
+		buffer = rd.storage_buffer_create(input_bytes.size(), input_bytes)
+		
+		# Create a uniform to assign the buffer to the rendering device
+		var uniform := RDUniform.new()
+		uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+		uniform.binding = 2 # this needs to match the "binding" in our shader file
+		uniform.add_id(buffer)
+
+		uniform_set = rd.uniform_set_create([read_uniform, write_uniform, uniform], shader, 0)
+		
+#		var shader_file := load("res://comp.glsl")
+#		var shader_spirv: RDShaderSPIRV = shader_file.get_spirv()
+#		var shader := rd.shader_create_from_spirv(shader_spirv)
+#
+#		# Prepare our data. We use floats in the shader, so we need 32 bit.
+#		var input_bytes := PackedByteArray(imgTexArray)
+#		#var input_bytes := input.to_byte_array()
+#
+#		# Create a storage buffer that can hold our float values.
+#		# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
+#		var buffer := rd.storage_buffer_create(input_bytes.size(), input_bytes)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if compute_type == 0:
 		_cpu_powered(delta)
 	else:
-		pass
-		#_gpu_powered()
+		_gpu_powered()
 
 func _cpu_powered(delta):
 	if stop:
 		msh.material.albedo_color = stop_color
-		msh.radius = 0.5
-		msh.height = 1
 	else:
 		msh.material.albedo_color = go_color
-		msh.radius = 0.25
-		msh.height = 0.5
 	var result = false
 	time += delta
 	if not thread.is_alive() and not stop and thread.is_started() and time >= min_time:
@@ -96,36 +192,83 @@ func _cpu_powered(delta):
 		full_cell_array = result[1]
 		empty_cell_array = result[2]
 		#done = true
-#	if build:
-#		for e in empty_cell_array:
-#			if Vector3i(e) != buildCursor:
-#				set_cell_item(e,-1)
-#		for f in full_cell_array:
-#			if Vector3i(f) != buildCursor:
-#				set_cell_item(f,0)
-#		set_cell_item(buildCursor,2)
-#		print(buildCursor)
+	if build:
+		for e in empty_cell_array:
+			if Vector3i(e) != buildCursor:
+				set_cell_item(e,-1)
+		for f in full_cell_array:
+			if Vector3i(f) != buildCursor:
+				set_cell_item(f,0)
+		set_cell_item(buildCursor,2)
+		print(buildCursor)
 
 func _gpu_powered():
-	if !img:
-		pass
-		#img = ImageTexture3D.new().create(Image.FORMAT_RGBA8, bounds*2, bounds*2, bounds*2, false, )
+	if fmod(comp_frame_count, 5.0) == 0.0:
+		var pf32a = PackedFloat32Array([living_cell_lives_with_neighbors_min,living_cell_lives_with_neighbors_max,dead_cell_lives_with_neighbors])
+		var tba = pf32a.to_byte_array()
 
-func make_array_from_gm():
-	var arr = []
-	for x in range(-bounds,bounds):
-		arr.append([Image])
-		for y in range(-bounds,bounds):
-			arr[x+bounds].append([])
-			for z in range(-bounds,bounds):
+		# Create a storage buffer that can hold our float values.
+		# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
+		#buffer = rd.storage_buffer_create(input_bytes.size(), input_bytes)
+		
+		rd.buffer_update(buffer, 0, tba.size(), tba)
+		
+		rd.texture_update(texture_read, 0, read_data)
+		# Start compute list to start recording our compute commands
+		var compute_list := rd.compute_list_begin()
+		# Bind the pipeline, this tells the GPU what shader to use
+		rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
+		# Binds the uniform set with the data we want to give our shader
+		rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+		var wgsize = bounds*2
+		rd.compute_list_dispatch(compute_list, wgsize, wgsize, wgsize)
+		rd.compute_list_end()  # Tell the GPU we are done with this compute task
+		rd.submit()  # Force the GPU to start our commands
+		rd.sync()  # Force the CPU to wait for the GPU to finish with the recorded commands
+
+		# Now we can grab our data from the texture
+		read_data = rd.texture_get_data(texture_write, 0)
+		var image := Image.create_from_data(image_size.x, image_size.y, false, image_format, read_data)
+		testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(image)
+		_make_gm_from_img2d(image)
+	comp_frame_count += 1
+
+func make_img2d_from_gm():
+	# make long form image instead of deep image
+	
+	# y stays the same but x increases by 2*bounds(?) to represent new z slice
+	var arrimg = Image.create(pow(2*bounds,2), 2*bounds, false, Image.FORMAT_RGBA8)
+	var zidx = 0
+	for z in range(-bounds,bounds):
+		var z_offset = (2*bounds) * zidx
+		for x in range(-bounds,bounds):
+			for y in range(-bounds,bounds):
 				var loc = Vector3(x,y,z)
 				var item = get_cell_item(loc)
 				if item == 0:
 					# cell is full
-					arr[x+bounds][y+bounds].append(Color(1,1,1,1))
+					arrimg.set_pixelv(Vector2i(x+bounds+z_offset,y+bounds), Color.WHITE)
 				elif item == -1:
-					arr[x+bounds][y+bounds].append(Color(0,0,0,1))
-	return arr
+					arrimg.set_pixelv(Vector2i(x+bounds+z_offset,y+bounds), Color.BLACK)
+		zidx += 1
+	return arrimg
+	
+func _make_gm_from_img2d(img: Image):
+	# make long form image instead of deep image
+	# y stays the same but x increases by 2*bounds(?) to represent new z slice
+	var zidx = 0
+	for z in range(-bounds,bounds):
+		var z_offset = (2*bounds) * zidx
+		for x in range(-bounds,bounds):
+			for y in range(-bounds,bounds):
+				var loc = Vector3(x,y,z)
+				var imgloc = Vector2i(x+bounds+z_offset,y+bounds)
+				var val = img.get_pixelv(imgloc)
+				if val == Color.BLACK:
+					set_cell_item(loc, -1)
+				else:
+					set_cell_item(loc, 0)
+		zidx += 1
 
 # Run here and exit.
 # The argument is the userdata passed from start().
@@ -161,7 +304,8 @@ func _thread_function():
 
 # Thread must be disposed (or "joined"), for portability.
 func _exit_tree():
-	thread.wait_to_finish()
+	if compute_type == 0:
+		thread.wait_to_finish()
 	
 func get_neighbors(x,y,z):
 	var loc_xL = Vector3(x-1,y,z)

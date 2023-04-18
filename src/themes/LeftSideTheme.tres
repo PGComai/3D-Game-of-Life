@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://buebfocw76opc"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://buebfocw76opc"]
 
 [ext_resource type="StyleBox" uid="uid://d0iywx4lms8bm" path="res://themes/roundSliderBox.tres" id="1_4ijhu"]
 
@@ -11,9 +11,28 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_icr2s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_quxc6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jnmny"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yucgk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bpf0o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ht4x6"]
+
 [resource]
 Button/styles/normal = SubResource("StyleBoxFlat_bo5ib")
+CheckButton/font_sizes/font_size = 16
+CheckButton/styles/hover = SubResource("StyleBoxEmpty_icr2s")
+CheckButton/styles/hover_pressed = SubResource("StyleBoxEmpty_quxc6")
+CheckButton/styles/normal = SubResource("StyleBoxEmpty_jnmny")
+CheckButton/styles/pressed = SubResource("StyleBoxEmpty_yucgk")
+HSeparator/styles/separator = SubResource("StyleBoxEmpty_bpf0o")
 HSlider/styles/slider = ExtResource("1_4ijhu")
 Label/colors/font_color = Color(0.454902, 0.494118, 0.556863, 1)
 RichTextLabel/colors/default_color = Color(0.454902, 0.494118, 0.556863, 1)
+VSeparator/styles/separator = SubResource("StyleBoxEmpty_ht4x6")
 VSlider/styles/slider = ExtResource("1_4ijhu")
