@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dfsfw5foanffn"]
+[gd_scene load_steps=3 format=3 uid="uid://uej4wvtoxdb6"]
 
-[ext_resource type="Script" path="res://img3d testing.gd" id="1_dxnax"]
+[ext_resource type="Script" path="res://scripts/img3d testing.gd" id="1_dxnax"]
 [ext_resource type="Texture2D" uid="uid://d0drcihov75m8" path="res://extras/imgtest.png" id="2_wcugg"]
 
 [node name="img3d testing" type="Node3D"]

@@ -4,10 +4,8 @@
 
 // Taken and modifier from https://github.com/yumcyaWiz/glsl-compute-shader-sandbox/blob/main/sandbox/life-game/shaders/update-cells.comp
 
-// 8x8 grid of invocations
 layout(local_size_x = 8, local_size_y = 8) in;
 
-// not sure what this does, something about establishing variables
 layout(set = 0, binding = 0, rgba32f) uniform image2D cells_in;
 layout(set = 0, binding = 1, rgba32f) uniform image2D cells_out;
 

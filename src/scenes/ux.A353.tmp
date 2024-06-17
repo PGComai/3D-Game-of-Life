@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bp8ynvnc2q5yr"]
+[gd_scene load_steps=16 format=3 uid="uid://bp8ynvnc2q5yr"]
 
 [ext_resource type="PackedScene" uid="uid://d00tpeoapds2x" path="res://scenes/game.tscn" id="1_61dwd"]
 [ext_resource type="Script" path="res://scripts/ux.gd" id="1_a2iyy"]
@@ -8,10 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://c8ihlm0gtw70x" path="res://Sound/pop.wav" id="4_xvvy2"]
 [ext_resource type="Script" path="res://scripts/pop.gd" id="5_8e2ru"]
 [ext_resource type="LabelSettings" uid="uid://dir4bfm0u0cid" path="res://themes/graphicsLabels.tres" id="5_c5uhm"]
-[ext_resource type="Script" path="res://scripts/SaveList.gd" id="7_nbe2o"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6gl0"]
-bg_color = Color(0.286275, 0.286275, 0.286275, 1)
+[ext_resource type="Script" path="res://scenes/SaveList.gd" id="7_4yiv5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wphjr"]
 
@@ -32,9 +29,6 @@ Button/styles/normal = SubResource("StyleBoxFlat_nqkg4")
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ede0e"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pn3fk"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vld8p"]
-bg_color = Color(0.286275, 0.286275, 0.286275, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -64,7 +58,6 @@ custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_stretch_ratio = 0.13
-theme_override_styles/panel = SubResource("StyleBoxFlat_g6gl0")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/leftBG"]
 layout_mode = 2
@@ -402,42 +395,6 @@ popup/item_0/id = 0
 popup/item_1/text = "Fast"
 popup/item_1/id = 1
 
-[node name="GraphicsSep4" type="HSeparator" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 6
-theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
-
-[node name="DrawModeHbox" type="HBoxContainer" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
-layout_mode = 2
-tooltip_text = "Sets the resolution scale of the render window."
-alignment = 2
-
-[node name="Label3" type="Label" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/DrawModeHbox"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Draw Mode
-"
-label_settings = ExtResource("5_c5uhm")
-horizontal_alignment = 1
-
-[node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/DrawModeHbox"]
-layout_mode = 2
-theme_override_constants/separation = 30
-theme_override_styles/separator = SubResource("StyleBoxEmpty_ede0e")
-
-[node name="DrawMode" type="OptionButton" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/DrawModeHbox"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-theme = SubResource("Theme_lv2aa")
-alignment = 1
-item_count = 2
-selected = 0
-popup/item_0/text = "Regular"
-popup/item_0/id = 0
-popup/item_1/text = "Overdraw"
-popup/item_1/id = 1
-
 [node name="HSeparator7" type="HSeparator" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 17
@@ -492,9 +449,10 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer"]
+transparent_bg = true
 handle_input_locally = false
 physics_object_picking = true
-size = Vector2i(2, 2)
+size = Vector2i(1440, 1440)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]
@@ -503,7 +461,6 @@ render_target_update_mode = 4
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_vld8p")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/rightBG"]
 layout_mode = 2
@@ -540,7 +497,7 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("7_nbe2o")
+script = ExtResource("7_4yiv5")
 
 [node name="border2" type="HSeparator" parent="PanelContainer/HBoxContainer/rightBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -553,7 +510,12 @@ layout_mode = 2
 disabled = true
 text = "Save Selection"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="Audio" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Audio"]
 stream = ExtResource("4_xvvy2")
 volume_db = -6.903
 pitch_scale = 0.39
@@ -564,11 +526,11 @@ script = ExtResource("5_8e2ru")
 [connection signal="go" from="." to="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_go"]
 [connection signal="stop" from="." to="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_control_stop"]
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/VSlider1" to="." method="_on_v_slider_1_value_changed"]
-[connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/VSlider1" to="AudioStreamPlayer" method="_on_v_slider_1_value_changed"]
+[connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider/VSlider1" to="Audio/AudioStreamPlayer" method="_on_v_slider_1_value_changed"]
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/VSlider2" to="." method="_on_v_slider_2_value_changed"]
-[connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/VSlider2" to="AudioStreamPlayer" method="_on_v_slider_2_value_changed"]
+[connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider2/VSlider2" to="Audio/AudioStreamPlayer" method="_on_v_slider_2_value_changed"]
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3" to="." method="_on_v_slider_3_value_changed"]
-[connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3" to="AudioStreamPlayer" method="_on_v_slider_3_value_changed"]
+[connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/HBoxContainer/slider3/VSlider3" to="Audio/AudioStreamPlayer" method="_on_v_slider_3_value_changed"]
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/boundSlider" to="." method="_on_bound_slider_value_changed"]
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/tickslider" to="." method="_on_tickslider_value_changed"]
 [connection signal="toggled" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box/compute" to="." method="_on_compute_toggled"]
@@ -577,7 +539,6 @@ script = ExtResource("5_8e2ru")
 [connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox/aa" to="." method="_on_aa_item_selected"]
 [connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/ScalingHbox/scaling" to="." method="_on_scaling_item_selected"]
 [connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/LightingHbox2/lighting" to="." method="_on_lighting_item_selected"]
-[connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/DrawModeHbox/DrawMode" to="." method="_on_draw_mode_item_selected"]
 [connection signal="pressed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="mouse_entered" from="PanelContainer/HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_entered"]
 [connection signal="mouse_exited" from="PanelContainer/HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_exited"]

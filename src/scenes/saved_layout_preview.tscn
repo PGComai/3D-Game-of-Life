@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://dyqfsx3tgx0cb"]
 
-[ext_resource type="Script" path="res://scenes/saved_layout_preview.gd" id="1_6msik"]
+[ext_resource type="Script" path="res://scripts/saved_layout_preview.gd" id="1_6msik"]
 [ext_resource type="PackedScene" uid="uid://cjgm4iamq1dkq" path="res://scenes/miniGrid.tscn" id="1_iwxt2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yanp"]

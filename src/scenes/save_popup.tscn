@@ -1,11 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://crh8ja25vxcjd"]
 
-[ext_resource type="Script" path="res://scenes/save_popup.gd" id="1_sjdxv"]
+[ext_resource type="Script" path="res://scripts/save_popup.gd" id="1_wxkfe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0ej5"]
 
 [node name="Panel" type="Panel"]
 top_level = true
+z_index = 2
 custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
@@ -21,7 +22,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_t0ej5")
-script = ExtResource("1_sjdxv")
+script = ExtResource("1_wxkfe")
 metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
