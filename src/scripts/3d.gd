@@ -84,7 +84,6 @@ func pointer(coll_layer):
 	var rayEnd = rayStart + cam.project_ray_normal(mousePos) * 2000
 	var query = PhysicsRayQueryParameters3D.create(rayStart, rayEnd, coll_layer)
 	var rayDict = spaceState.intersect_ray(query)
-
 	if rayDict.has('position'):
 		return [rayDict['position'],rayDict['normal']]
 	return null
