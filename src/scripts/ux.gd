@@ -159,7 +159,7 @@ func cam():
 			cpz = cm.position.z - 10
 		if Input.is_action_just_released('zout'):
 			cpz = cm.position.z + 10
-	cpz = clamp(cpz, 5, 250)
+	cpz = clamp(cpz, 5, 400)
 	cm.position.z = lerp(cm.position.z, cpz, 0.1)
 	if !is_equal_approx(roty,0):
 		ch.rotation.y = lerp_angle(ch.rotation.y, ch.rotation.y - roty, 0.05)
@@ -193,10 +193,6 @@ func _on_v_slider_2_value_changed(value):
 func _on_v_slider_3_value_changed(value):
 	gm.dead_cell_lives_with_neighbors = value
 	slider3val = value
-
-
-func _on_button_pressed():
-	q_reset = true
 
 
 func _on_button_2_pressed():
@@ -328,3 +324,7 @@ func _on_draw_mode_item_selected(index):
 		subv.debug_draw = SubViewport.DEBUG_DRAW_OVERDRAW
 	else:
 		pass
+
+
+func _on_button_reset_pressed():
+	q_reset = true

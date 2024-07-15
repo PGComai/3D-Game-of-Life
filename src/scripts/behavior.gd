@@ -198,6 +198,11 @@ func _process(delta):
 		if not stop:
 			_gpu_powered()
 
+
+func _reset():
+	pass
+
+
 func _cpu_powered():
 	var result = false
 	if not thread.is_alive() and not stop and thread.is_started():
@@ -239,6 +244,7 @@ func _gpu_powered():
 		rd.compute_list_dispatch(compute_list, wgsize, wgsize, wgsize)
 		rd.compute_list_end()  # Tell the GPU we are done with this compute task
 		rd.submit()  # Force the GPU to start our commands
+		print(rd.get_memory_usage(RenderingDevice.MEMORY_TOTAL))
 		rd_submit_frame_count += 1
 	elif rd_submit_frame_count < 3:
 		rd_submit_frame_count += 1
@@ -318,10 +324,7 @@ func _make_gm_from_img2d(img: Image):
 	full_cell_array = fulls
 	empty_cell_array = empties
 
-# Run here and exit.
-# The argument is the userdata passed from start().
-# If no argument was passed, this one still needs to
-# be here and it will be null.
+
 func _thread_function():
 	var empties = []
 	var fulls = []
@@ -347,6 +350,7 @@ func _thread_function():
 					else:
 						empties.append(loc)
 	return ['done', fulls, empties]
+
 
 # Thread must be disposed (or "joined"), for portability.
 func _exit_tree():

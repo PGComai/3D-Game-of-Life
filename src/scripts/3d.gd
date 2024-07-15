@@ -30,7 +30,8 @@ func _ready():
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and y_adjust:
 		y_height -= event.relative.y * y_sens
-	
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if stop and Input.is_action_pressed("click") and not build:

@@ -244,7 +244,7 @@ layout_mode = 2
 theme_override_constants/separation = 17
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wphjr")
 
-[node name="Button" type="Button" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
+[node name="ButtonReset" type="Button" parent="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Reset Cells"
 
@@ -571,7 +571,7 @@ script = ExtResource("5_8e2ru")
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/boundSlider" to="." method="_on_bound_slider_value_changed"]
 [connection signal="value_changed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/tickslider" to="." method="_on_tickslider_value_changed"]
 [connection signal="toggled" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box/compute" to="." method="_on_compute_toggled"]
-[connection signal="pressed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/ButtonReset" to="." method="_on_button_reset_pressed"]
 [connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/shadowsHbox/shadow" to="." method="_on_shadow_item_selected"]
 [connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/AAHbox/aa" to="." method="_on_aa_item_selected"]
 [connection signal="item_selected" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/ScalingHbox/scaling" to="." method="_on_scaling_item_selected"]
