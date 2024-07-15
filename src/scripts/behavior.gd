@@ -83,15 +83,31 @@ func _ready():
 		gc.shader_file = load("res://comp.glsl")
 		gc._load_shader()
 		
+		var lim_buff = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_UNIFORM_BUFFER_SIZE)
+		
+		var lim_wgc_x = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_COMPUTE_WORKGROUP_COUNT_X)
+		var lim_wgc_y = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_COMPUTE_WORKGROUP_COUNT_Y)
+		var lim_wgc_z = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_COMPUTE_WORKGROUP_COUNT_Z)
+		
+		var lim_wgs_x = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_COMPUTE_WORKGROUP_SIZE_X)
+		var lim_wgs_y = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_COMPUTE_WORKGROUP_SIZE_Y)
+		var lim_wgs_z = gc.rd.limit_get(RenderingDevice.LIMIT_MAX_COMPUTE_WORKGROUP_SIZE_Z)
+		
+		print("Max workgroup counts: X-" + str(lim_wgc_x) + " Y-" + str(lim_wgc_y) + " Z-" + str(lim_wgc_z))
+		print("Max workgroup sizes: X-" + str(lim_wgs_x) + " Y-" + str(lim_wgs_y) + " Z-" + str(lim_wgs_z))
+		print("Max uniform buffer size: %s MB" % (lim_buff / 1000000))
+		
 		wgsize = bounds*2
 		var num_slots: int = int(pow(wgsize, 3.0))
 		
 		var slot_array := PackedFloat32Array([])
 		slot_array.resize(num_slots)
+		slot_array.fill(0.0)
 		var slot_bytes := slot_array.to_byte_array()
 		
 		var output_array := PackedFloat32Array([])
 		output_array.resize(num_slots)
+		output_array.fill(0.0)
 		var output_bytes := output_array.to_byte_array()
 		
 		var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
@@ -106,6 +122,12 @@ func _ready():
 		gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize), true)
 		
 		gc._submit()
+		
+		var mem = gc.rd.get_memory_usage(RenderingDevice.MEMORY_TOTAL)
+		
+		mem /= 1000000
+		
+		print("Memory usage: %s MB" % mem)
 		#rd = RenderingServer.create_local_rendering_device()
 		#if not rd:
 			#set_process(false)
@@ -231,13 +253,20 @@ func _cpu_powered():
 			set_cell_item(f,0)
 		full_cell_array = result[1]
 		empty_cell_array = result[2]
-		
+
 
 func _gpu_powered():
 	gc._sync()
 	
 	var output_bytes := gc.output(0, 1)
 	var output := output_bytes.to_float32_array()
+	
+	var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
+											living_cell_lives_with_neighbors_max,
+											dead_cell_lives_with_neighbors])
+	var param_bytes := param_array.to_byte_array()
+	
+	gc._update_buffer(param_bytes, 0, 2)
 	
 	gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize))
 	
