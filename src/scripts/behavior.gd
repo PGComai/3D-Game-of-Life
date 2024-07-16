@@ -10,6 +10,8 @@ signal send_bounds(b)
 @export var bounds: int = 10
 @export_enum('CPU','GPU') var compute_type: int = 0
 @export var img2d: Image
+@export var initial_noise: FastNoiseLite
+@export var noise_threshold: float = 0.1
 
 #@onready var comp = preload("res://comp.glsl")
 @onready var testmesh = $testmesh
@@ -32,9 +34,14 @@ var done: bool
 var new_blocks := false
 var mutex
 var wgsize: int
+var tick := true
 
 
 var gc := GPUComputer.new()
+
+
+@onready var timer = $Timer
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -66,14 +73,14 @@ func _ready():
 		for y in range(-bounds,bounds):
 			for z in range(-bounds,bounds):
 				var loc = Vector3(x,y,z)
-				var item = get_cell_item(loc)
-				if item == 0:
-					# cell is full
+				var nval = initial_noise.get_noise_3dv(loc)
+				if nval > noise_threshold:
+					set_cell_item(loc, 0)
 					full_cell_array.append(loc)
-				elif item == -1:
+				else:
 					empty_cell_array.append(loc)
-	img2d = make_img2d_from_gm()
-	testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(img2d)
+	#img2d = make_img2d_from_gm()
+	#testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(img2d)
 	#print(img2d.get_size())
 	if compute_type == 0:
 		thread = Thread.new()
@@ -100,10 +107,13 @@ func _ready():
 		wgsize = bounds*2
 		var num_slots: int = int(pow(wgsize, 3.0))
 		
-		var slot_array := PackedFloat32Array([])
-		slot_array.resize(num_slots)
-		slot_array.fill(0.0)
-		var slot_bytes := slot_array.to_byte_array()
+		var new_array: PackedFloat32Array = array_from_gm()
+		#var new_array_bytes := new_array.to_byte_array()
+		
+		#var slot_array := PackedFloat32Array([])
+		#slot_array.resize(num_slots)
+		#slot_array.fill(0.0)
+		var slot_bytes := new_array.to_byte_array()
 		
 		var output_array := PackedFloat32Array([])
 		output_array.resize(num_slots)
@@ -256,21 +266,30 @@ func _cpu_powered():
 
 
 func _gpu_powered():
-	gc._sync()
-	
-	var output_bytes := gc.output(0, 1)
-	var output := output_bytes.to_float32_array()
-	
-	var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
-											living_cell_lives_with_neighbors_max,
-											dead_cell_lives_with_neighbors])
-	var param_bytes := param_array.to_byte_array()
-	
-	gc._update_buffer(param_bytes, 0, 2)
-	
-	gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize))
-	
-	gc._submit()
+	if tick:
+		gc._sync()
+		
+		var output_bytes := gc.output(0, 1)
+		var output := output_bytes.to_float32_array()
+		
+		gm_from_array(output)
+		
+		var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
+												living_cell_lives_with_neighbors_max,
+												dead_cell_lives_with_neighbors])
+		var param_bytes := param_array.to_byte_array()
+		
+		var new_array: PackedFloat32Array = array_from_gm()
+		var new_array_bytes := new_array.to_byte_array()
+		
+		gc._update_buffer(new_array_bytes, 0, 0)
+		gc._update_buffer(param_bytes, 0, 2)
+		
+		gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize))
+		
+		gc._submit()
+		timer.start(min_time)
+		tick = false
 	
 	##if fmod(comp_frame_count, 5.0) == 0.0:
 	#if rd_submit_frame_count == 0:
@@ -311,6 +330,35 @@ func _gpu_powered():
 		#rd_submit_frame_count = 0
 		##time = 0.0
 	##comp_frame_count += 1
+
+
+func gm_from_array(arr: PackedFloat32Array):
+	var idx = 0
+	for x in range(-bounds,bounds):
+		for y in range(-bounds,bounds):
+			for z in range(-bounds,bounds):
+				var loc = Vector3(x,y,z)
+				if arr[idx] == 1.0:
+					set_cell_item(loc, 0)
+				else:
+					set_cell_item(loc, -1)
+				
+				idx += 1
+
+
+func array_from_gm():
+	var result := PackedFloat32Array([])
+	for x in range(-bounds,bounds):
+		for y in range(-bounds,bounds):
+			for z in range(-bounds,bounds):
+				var loc = Vector3(x,y,z)
+				var item = get_cell_item(loc)
+				if item == 0:
+					result.append(1.0)
+				else:
+					result.append(0.0)
+	return result
+
 
 #func make_img3d_from_gm() -> ImageTexture3D:
 	#var img3d = ImageTexture3D.new()
@@ -546,3 +594,7 @@ func expanding_search(cell: Vector3i, exclude: Array = [], del: bool = false):
 					expanding_search_exclude.erase(fc)
 					emit_signal("clear_cell", fc)
 			
+
+
+func _on_timer_timeout():
+	tick = true
