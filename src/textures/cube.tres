@@ -1,17 +1,18 @@
 [gd_resource type="BoxMesh" load_steps=4 format=3 uid="uid://drafbk1j7ns8k"]
 
-[ext_resource type="FastNoiseLite" uid="uid://wv0y2jk3esae" path="res://textures/cubeTexNoise.tres" id="1_g0uyk"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xf16d"]
+frequency = 0.066
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vn774"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_titng"]
 width = 64
 height = 64
 as_normal_map = true
 bump_strength = 0.5
-noise = ExtResource("1_g0uyk")
+noise = SubResource("FastNoiseLite_xf16d")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0kmiw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vb7ov"]
 normal_scale = 0.15
-normal_texture = SubResource("NoiseTexture2D_vn774")
+normal_texture = SubResource("NoiseTexture2D_titng")
 clearcoat_roughness = 0.05
 subsurf_scatter_strength = 0.14
 distance_fade_mode = 2
@@ -19,5 +20,5 @@ distance_fade_min_distance = 3.0
 distance_fade_max_distance = 5.0
 
 [resource]
-material = SubResource("StandardMaterial3D_0kmiw")
+material = SubResource("StandardMaterial3D_vb7ov")
 size = Vector3(2, 2, 2)

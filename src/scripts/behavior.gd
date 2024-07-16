@@ -10,11 +10,12 @@ signal send_bounds(b)
 @export var bounds: int = 10
 @export_enum('CPU','GPU') var compute_type: int = 0
 @export var img2d: Image
+@export var use_noise := false
 @export var initial_noise: FastNoiseLite
 @export var noise_threshold: float = 0.1
 
 #@onready var comp = preload("res://comp.glsl")
-@onready var testmesh = $testmesh
+
 
 var min_time: float = 0.2
 var counter = 0
@@ -41,6 +42,7 @@ var gc := GPUComputer.new()
 
 
 @onready var timer = $Timer
+@onready var testmesh = $testmesh
 
 
 # Called when the node enters the scene tree for the first time.
@@ -69,16 +71,18 @@ func _ready():
 	for c in get_used_cells_by_item(0):
 		if c.x >= b1 or c.x <= -b1-1 or c.y >= b1 or c.y <= -b1-1 or c.z >= b1 or c.z <= -b1-1:
 			set_cell_item(c,-1)
-	for x in range(-bounds,bounds):
-		for y in range(-bounds,bounds):
-			for z in range(-bounds,bounds):
-				var loc = Vector3(x,y,z)
-				var nval = initial_noise.get_noise_3dv(loc)
-				if nval > noise_threshold:
-					set_cell_item(loc, 0)
-					full_cell_array.append(loc)
-				else:
-					empty_cell_array.append(loc)
+	
+	if use_noise:
+		for x in range(-bounds,bounds):
+			for y in range(-bounds,bounds):
+				for z in range(-bounds,bounds):
+					var loc = Vector3(x,y,z)
+					var nval = initial_noise.get_noise_3dv(loc)
+					if nval > noise_threshold:
+						set_cell_item(loc, 0)
+						full_cell_array.append(loc)
+					else:
+						empty_cell_array.append(loc)
 	#img2d = make_img2d_from_gm()
 	#testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(img2d)
 	#print(img2d.get_size())
@@ -339,7 +343,10 @@ func gm_from_array(arr: PackedFloat32Array):
 			for z in range(-bounds,bounds):
 				var loc = Vector3(x,y,z)
 				if arr[idx] == 1.0:
-					set_cell_item(loc, 0)
+					if get_cell_item(loc) == -1:
+						set_cell_item(loc, 2)
+					else:
+						set_cell_item(loc, 0)
 				else:
 					set_cell_item(loc, -1)
 				
@@ -353,7 +360,7 @@ func array_from_gm():
 			for z in range(-bounds,bounds):
 				var loc = Vector3(x,y,z)
 				var item = get_cell_item(loc)
-				if item == 0:
+				if item == 0 or item == 2:
 					result.append(1.0)
 				else:
 					result.append(0.0)

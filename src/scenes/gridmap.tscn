@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bfrdp0dejo1pc"]
+[gd_scene load_steps=9 format=3 uid="uid://bfrdp0dejo1pc"]
 
 [ext_resource type="BoxMesh" uid="uid://drafbk1j7ns8k" path="res://textures/cube.tres" id="1_tkm8p"]
 
@@ -16,6 +16,30 @@ distance_fade_min_distance = 5.0
 [sub_resource type="PointMesh" id="PointMesh_2yt6n"]
 material = SubResource("StandardMaterial3D_fh4ay")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ujswa"]
+frequency = 0.066
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_crj6d"]
+width = 64
+height = 64
+as_normal_map = true
+bump_strength = 0.5
+noise = SubResource("FastNoiseLite_ujswa")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jtx3i"]
+albedo_color = Color(4.62055e-06, 0.628143, 0.828761, 1)
+normal_scale = 0.15
+normal_texture = SubResource("NoiseTexture2D_crj6d")
+clearcoat_roughness = 0.05
+subsurf_scatter_strength = 0.14
+distance_fade_mode = 2
+distance_fade_min_distance = 3.0
+distance_fade_max_distance = 5.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_6l42g"]
+material = SubResource("StandardMaterial3D_jtx3i")
+size = Vector3(2, 2, 2)
+
 [node name="Node" type="Node"]
 
 [node name="block" type="MeshInstance3D" parent="."]
@@ -30,3 +54,11 @@ shape = SubResource("BoxShape3D_1btoj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
 cast_shadow = 0
 mesh = SubResource("PointMesh_2yt6n")
+
+[node name="colorBlock" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_6l42g")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="colorBlock"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="colorBlock/StaticBody3D"]
+shape = SubResource("BoxShape3D_1btoj")
