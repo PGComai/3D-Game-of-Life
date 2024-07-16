@@ -11,7 +11,7 @@ signal delete_block(loc)
 @onready var cam = $CamHinge/Camera3D
 @onready var bg = $BuildGrid
 @onready var plane_grid_map = $BuildingPlane/PlaneGridMap
-@onready var control = $"../../../../../.."
+@onready var control = $"../../../../../../.."
 @onready var building_plane = $BuildingPlane
 @onready var height_wall = $HeightPlane/HeightWall
 @onready var cam_hinge = $CamHinge

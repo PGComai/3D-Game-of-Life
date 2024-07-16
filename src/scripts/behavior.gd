@@ -276,6 +276,7 @@ func _gpu_powered():
 		var output_bytes := gc.output(0, 1)
 		var output := output_bytes.to_float32_array()
 		
+		# conditional on "just unpaused"
 		gm_from_array(output)
 		
 		var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
@@ -294,46 +295,6 @@ func _gpu_powered():
 		gc._submit()
 		timer.start(min_time)
 		tick = false
-	
-	##if fmod(comp_frame_count, 5.0) == 0.0:
-	#if rd_submit_frame_count == 0:
-		#var pf32a = PackedFloat32Array([living_cell_lives_with_neighbors_min,living_cell_lives_with_neighbors_max,dead_cell_lives_with_neighbors])
-		#var tba = pf32a.to_byte_array()
-#
-		## Create a storage buffer that can hold our float values.
-		## Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
-		##buffer = rd.storage_buffer_create(input_bytes.size(), input_bytes)
-		#
-		#rd.buffer_update(buffer, 0, tba.size(), tba)
-		#
-		#rd.texture_update(texture_read, 0, read_data)
-		## Start compute list to start recording our compute commands
-		#var compute_list := rd.compute_list_begin()
-		## Bind the pipeline, this tells the GPU what shader to use
-		#rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
-		## Binds the uniform set with the data we want to give our shader
-		#rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
-		#var wgsize = bounds*2
-		#rd.compute_list_dispatch(compute_list, wgsize, wgsize, wgsize)
-		#rd.compute_list_end()  # Tell the GPU we are done with this compute task
-		#rd.submit()  # Force the GPU to start our commands
-		#print(rd.get_memory_usage(RenderingDevice.MEMORY_TOTAL))
-		#rd_submit_frame_count += 1
-	#elif rd_submit_frame_count < 3:
-		#rd_submit_frame_count += 1
-	#else:
-		#rd.sync()  # Force the CPU to wait for the GPU to finish with the recorded commands
-#
-		## Now we can grab our data from the texture
-		#read_data = rd.texture_get_data(texture_write, 0)
-		##var output_buffer_3d = rd.buffer_get_data(buffer_3d_array)
-		##print(output_buffer_3d)
-		#var image := Image.create_from_data(image_size.x, image_size.y, false, image_format, read_data)
-		##testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(image)
-		#_make_gm_from_img2d(image)
-		#rd_submit_frame_count = 0
-		##time = 0.0
-	##comp_frame_count += 1
 
 
 func gm_from_array(arr: PackedFloat32Array):
@@ -365,69 +326,6 @@ func array_from_gm():
 				else:
 					result.append(0.0)
 	return result
-
-
-#func make_img3d_from_gm() -> ImageTexture3D:
-	#var img3d = ImageTexture3D.new()
-	#var img_array = []
-	#for z in range(-bounds,bounds):
-		#var img = Image.create(2*bounds, 2*bounds, false, Image.FORMAT_R8)
-		#for x in range(-bounds,bounds):
-			#for y in range(-bounds,bounds):
-				#var loc = Vector3(x,y,z)
-				##var item = get_cell_item(loc)
-				#if full_cell_array.has(loc):
-					## cell is full
-					#img.set_pixelv(Vector2i(x+bounds,y+bounds), Color.WHITE)
-				#else:
-					#img.set_pixelv(Vector2i(x+bounds,y+bounds), Color.BLACK)
-		#img_array.append(img)
-	##return img_array
-	#img3d.create(Image.FORMAT_R8, 2*bounds, 2*bounds, 2*bounds, false, img_array)
-	#return img3d
-
-func make_img2d_from_gm():
-	# make long form image instead of deep image
-	
-	# y stays the same but x increases by 2*bounds(?) to represent new z slice
-	var arrimg = Image.create(pow(2*bounds,2), 2*bounds, false, Image.FORMAT_RGBA8)
-	var zidx = 0
-	for z in range(-bounds,bounds):
-		var z_offset = (2*bounds) * zidx
-		for x in range(-bounds,bounds):
-			for y in range(-bounds,bounds):
-				var loc = Vector3(x,y,z)
-				#var item = get_cell_item(loc)
-				if full_cell_array.has(loc):
-					# cell is full
-					arrimg.set_pixelv(Vector2i(x+bounds+z_offset,y+bounds), Color.WHITE)
-				else:
-					arrimg.set_pixelv(Vector2i(x+bounds+z_offset,y+bounds), Color.BLACK)
-		zidx += 1
-	return arrimg
-	
-func _make_gm_from_img2d(img: Image):
-	var empties = []
-	var fulls = []
-	# make long form image instead of deep image
-	# y stays the same but x increases by 2*bounds(?) to represent new z slice
-	var zidx = 0
-	for z in range(-bounds,bounds):
-		var z_offset = (2*bounds) * zidx
-		for x in range(-bounds,bounds):
-			for y in range(-bounds,bounds):
-				var loc = Vector3(x,y,z)
-				var imgloc = Vector2i(x+bounds+z_offset,y+bounds)
-				var val = img.get_pixelv(imgloc)
-				if val == Color.BLACK:
-					set_cell_item(loc, -1)
-					empties.append(loc)
-				else:
-					set_cell_item(loc, 0)
-					fulls.append(loc)
-		zidx += 1
-	full_cell_array = fulls
-	empty_cell_array = empties
 
 
 func _thread_function():
@@ -491,7 +389,8 @@ func get_neighbors(x,y,z):
 	var loc_xRyLzR = Vector3(x+1,y-1,z+1)
 	return [loc_xL,loc_xR,loc_yL,loc_yR,loc_zL,loc_zR,loc_xLyL,loc_xLyR,loc_xRyL,loc_xRyR,loc_yLzL,loc_yLzR,
 		loc_yRzL,loc_yRzR,loc_zLxL,loc_zLxR,loc_zRxL,loc_zRxR,loc_xLyLzL,loc_xRyLzL,loc_xLyRzL,loc_xRyRzL,loc_xLyRzR,loc_xRyRzR,loc_xLyLzR,loc_xRyLzR]
-		
+
+
 func get_neighbors_search(loc: Vector3i):
 	var x = loc.x
 	var y = loc.y
