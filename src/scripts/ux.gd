@@ -32,6 +32,8 @@ signal build
 @onready var save_list = $PanelContainer/HBoxContainer/rightBG/MarginContainer/VBoxContainer/ScrollContainer/SaveList
 @onready var node_3d = $PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D
 @onready var compute = $PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/cpu_gpu_box/compute
+@onready var button_pause = $PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/HBoxControls/ButtonPause
+
 
 var gm
 var cpz: float
@@ -51,17 +53,20 @@ var compute_mode: int
 
 var saver = ResourceSaver
 
+var global: Node
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	global = get_node("/root/Global")
 	selection.save_cells.connect(_on_selection_save_cells)
 	selection.selected.connect(_on_selection_selected)
 	selection.not_selected.connect(_on_selection_not_selected)
 	cpz = cm.position.z
 	roty = ch.rotation.y
 	rotx = ch.rotation.x 
-	if get_node("PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder").get_child_count() > 0:
-		gm = $PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D/GridHolder.get_child(0)
+	if gh.get_child_count() > 0:
+		gm = gh.get_child(0)
 		slider1.set_value_no_signal(gm.living_cell_lives_with_neighbors_min)
 		label1.text = str(gm.living_cell_lives_with_neighbors_min)
 		slider1val = gm.living_cell_lives_with_neighbors_min
@@ -92,23 +97,18 @@ func _unhandled_input(event):
 		roty = clamp(roty, cm.rotation.y-PI/4, cm.rotation.y+PI/4)
 	if event.is_action_pressed("stop") and gh.get_child_count() > 0:
 		node_3d.y_adjust = false
-		if gm.stop:
-			emit_signal('go')
-			gm.stop = false
-			gm.build = false
+		if global.stop:
+			global.stop = false
+			global.build = false
 		else:
-			emit_signal('stop')
-			gm.stop = true
+			global.stop = true
 	if event.is_action_pressed("build") and gh.get_child_count() > 0:
 		node_3d.y_adjust = false
-		if gm.stop:
-			emit_signal("build")
-			gm.build = !gm.build
+		if global.stop:
+			global.build = !global.build
 		else:
-			emit_signal('stop')
-			gm.stop = true
-			emit_signal("build")
-			gm.build = !gm.build
+			global.stop = true
+			global.build = !global.build
 	if event.is_action_pressed("reset"):
 		node_3d.y_adjust = false
 		q_reset = true
@@ -119,10 +119,8 @@ func _unhandled_input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_pressed("middle_click") and looking:
-		rot = true
-	if Input.is_action_just_released("middle_click"):
-		rot = false
+	rot = Input.is_action_pressed("orbit") and looking
+	
 	if rot:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
@@ -143,6 +141,8 @@ func _process(delta):
 		gm = gh.get_child(0)
 		# set new grid variables
 		q_reset = false
+	
+	# do i need to set this each frame?
 	label1.text = str(gm.living_cell_lives_with_neighbors_min)
 	label2.text = str(gm.living_cell_lives_with_neighbors_max)
 	label3.text = str(gm.dead_cell_lives_with_neighbors)
@@ -154,11 +154,13 @@ func _process(delta):
 
 func cam():
 	# zoom and rotate
+	
+	# should i move this to 3d node?
 	if looking:
 		if Input.is_action_just_released('zin'):
-			cpz = cm.position.z - 10
+			cpz = cm.position.z - 20
 		if Input.is_action_just_released('zout'):
-			cpz = cm.position.z + 10
+			cpz = cm.position.z + 20
 	cpz = clamp(cpz, 5, 400)
 	cm.position.z = lerp(cm.position.z, cpz, 0.1)
 	if !is_equal_approx(roty,0):
@@ -328,3 +330,14 @@ func _on_draw_mode_item_selected(index):
 
 func _on_button_reset_pressed():
 	q_reset = true
+
+
+func _on_button_pause_pressed():
+	node_3d.y_adjust = false
+	if global.stop:
+		global.stop = false
+		global.build = false
+		button_pause.text = "Pause"
+	else:
+		global.stop = true
+		button_pause.text = "Resume"

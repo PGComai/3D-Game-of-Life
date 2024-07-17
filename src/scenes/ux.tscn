@@ -481,7 +481,6 @@ mouse_filter = 1
 color = Color(0.0823529, 0.109804, 0.164706, 1)
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG"]
-z_index = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -497,6 +496,22 @@ size = Vector2i(1440, 1440)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport" instance=ExtResource("1_61dwd")]
+
+[node name="HBoxControls" type="HBoxContainer" parent="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="ButtonPause" type="Button" parent="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/HBoxControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Pause"
 
 [node name="rightBG" type="ScrollContainer" parent="PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(500, 0)
@@ -580,4 +595,6 @@ script = ExtResource("5_8e2ru")
 [connection signal="pressed" from="PanelContainer/HBoxContainer/leftBG/MarginContainer/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="mouse_entered" from="PanelContainer/HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_entered"]
 [connection signal="mouse_exited" from="PanelContainer/HBoxContainer/AspectRatioContainer" to="." method="_on_aspect_ratio_container_mouse_exited"]
+[connection signal="gui_input" from="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer" to="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/SubViewportContainer/SubViewport/Node3D" method="_on_sub_viewport_container_gui_input"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/AspectRatioContainer/gameBG/HBoxControls/ButtonPause" to="." method="_on_button_pause_pressed"]
 [connection signal="pressed" from="PanelContainer/HBoxContainer/rightBG/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]

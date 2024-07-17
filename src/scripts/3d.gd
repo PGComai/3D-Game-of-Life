@@ -16,46 +16,30 @@ signal delete_block(loc)
 @onready var height_wall = $HeightPlane/HeightWall
 @onready var cam_hinge = $CamHinge
 
-var stop = false
-var build = false
+
 var y_adjust = false
-var y_height = 0
+var y_height: float = 0.0
 var bounds = 0
 var y_sens = 0.1
 
+var global: Node
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	global = get_node("/root/Global")
 	
 func _unhandled_input(event):
-	if event is InputEventMouseMotion and y_adjust:
-		y_height -= event.relative.y * y_sens
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if stop and Input.is_action_pressed("click") and not build:
-		var pp = pointer(0b00000000000000000001)
-		if pp:
-			emit_signal("rayHit",(pp[0]-pp[1]),false)
-	elif stop and Input.is_action_pressed("rclick") and not build:
-		var pp = pointer(0b00000000000000000001)
-		if pp:
-			emit_signal("rayHit",(pp[0]-pp[1]),true)
-	elif stop and build:
+	if global.stop and global.build:
 		if Input.is_action_pressed("shift") and control.looking:
-			y_adjust = true
-			height_wall.rotation.y = cam_hinge.rotation.y
-			var pp = pointer(0b00000000000000000100)
-			if pp:
-				y_height = pp[0].y
-				y_height = clamp(y_height, -2*bounds, 2*bounds-2)
-				y_height = snapped(y_height, 2)
-				building_plane.global_position.y = y_height
-				emit_signal("adjust_build_cube_y", y_height)
+			pass
 		else:
 			y_adjust = false
-			var pp = pointer(0b00000000000000000010)
+			var pp = pointer(2)
 			if pp:
 				var target = pp[0]
 				# this bit is necessary for good grid snapping
@@ -75,8 +59,8 @@ func _process(delta):
 				elif Input.is_action_pressed("rclick"):
 					#delete block
 					emit_signal("delete_block", t)
-	bg.visible = build
-	plane_grid_map.visible = build
+	bg.visible = global.build
+	plane_grid_map.visible = global.build
 
 func pointer(coll_layer):
 	var spaceState = get_world_3d().direct_space_state
@@ -89,19 +73,26 @@ func pointer(coll_layer):
 		return [rayDict['position'],rayDict['normal']]
 	return null
 
-func _on_control_stop():
-	stop = true
-
-func _on_control_go():
-	stop = false
-	build = false
-
-func _on_control_build():
-	build = !build
 
 func _on_grid_holder_child_entered_tree(node):
-	build = false
-	bounds = node.bounds
+	if global:
+		global.build = false
+		bounds = node.bounds
 
 func _on_build_grid_wall_go_here(loc):
 	height_wall.global_position = loc
+
+
+func _on_sub_viewport_container_gui_input(event: InputEvent):
+	if global.stop:
+		if global.build:
+			if Input.is_action_pressed("shift"):
+				if event is InputEventMouseMotion:
+					y_height += event.relative.y * y_sens
+					y_height = clampf(y_height, -2*bounds, 2*bounds-2)
+					building_plane.global_position.y = snapped(y_height, 2.0)
+					emit_signal("adjust_build_cube_y", y_height)
+		else:
+			pass
+	else:
+		pass

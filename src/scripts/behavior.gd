@@ -20,8 +20,6 @@ signal send_bounds(b)
 var min_time: float = 0.2
 var counter = 0
 var thread: Thread
-var stop: bool = false
-var build: bool = false
 var go_color: Color = Color('f3836b')
 var stop_color: Color = Color('bda837')
 var msh = mesh_library.get_item_mesh(1)
@@ -36,9 +34,13 @@ var new_blocks := false
 var mutex
 var wgsize: int
 var tick := true
+var gpu_started := false
+var just_resumed := false
 
 
 var gc := GPUComputer.new()
+
+var global: Node
 
 
 @onready var timer = $Timer
@@ -47,6 +49,7 @@ var gc := GPUComputer.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	global = get_node("/root/Global")
 	mutex = Mutex.new()
 	emit_signal("send_bounds", bounds)
 	### get this signal to work with bound adjustments ###
@@ -83,12 +86,9 @@ func _ready():
 						full_cell_array.append(loc)
 					else:
 						empty_cell_array.append(loc)
-	#img2d = make_img2d_from_gm()
-	#testmesh.material_overlay.albedo_texture = ImageTexture.create_from_image(img2d)
-	#print(img2d.get_size())
+	
 	if compute_type == 0:
 		thread = Thread.new()
-		# Third argument is optional userdata, it can be any variable.
 		thread.start(Callable(self, "_thread_function"),Thread.PRIORITY_HIGH)
 	else:
 		gc.shader_file = load("res://comp.glsl")
@@ -107,135 +107,11 @@ func _ready():
 		print("Max workgroup counts: X-" + str(lim_wgc_x) + " Y-" + str(lim_wgc_y) + " Z-" + str(lim_wgc_z))
 		print("Max workgroup sizes: X-" + str(lim_wgs_x) + " Y-" + str(lim_wgs_y) + " Z-" + str(lim_wgs_z))
 		print("Max uniform buffer size: %s MB" % (lim_buff / 1000000))
-		
-		wgsize = bounds*2
-		var num_slots: int = int(pow(wgsize, 3.0))
-		
-		var new_array: PackedFloat32Array = array_from_gm()
-		#var new_array_bytes := new_array.to_byte_array()
-		
-		#var slot_array := PackedFloat32Array([])
-		#slot_array.resize(num_slots)
-		#slot_array.fill(0.0)
-		var slot_bytes := new_array.to_byte_array()
-		
-		var output_array := PackedFloat32Array([])
-		output_array.resize(num_slots)
-		output_array.fill(0.0)
-		var output_bytes := output_array.to_byte_array()
-		
-		var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
-											living_cell_lives_with_neighbors_max,
-											dead_cell_lives_with_neighbors])
-		var param_bytes := param_array.to_byte_array()
-		
-		gc._add_buffer(0, 0, slot_bytes)
-		gc._add_buffer(0, 1, output_bytes)
-		gc._add_buffer(0, 2, param_bytes)
-		
-		gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize), true)
-		
-		gc._submit()
-		
-		var mem = gc.rd.get_memory_usage(RenderingDevice.MEMORY_TOTAL)
-		
-		mem /= 1000000
-		
-		print("Memory usage: %s MB" % mem)
-		#rd = RenderingServer.create_local_rendering_device()
-		#if not rd:
-			#set_process(false)
-			#print("Compute shaders are not available")
-			#return
-		#
-		#var image3d: ImageTexture3D
-		#var image3d := make_img3d_from_gm()
-		#
-		## Create shader and pipeline
-		#var shader_spirv := comp.get_spirv()
-		#shader = rd.shader_create_from_spirv(shader_spirv)
-		#pipeline = rd.compute_pipeline_create(shader)
-#
-		#var og_image := img2d
-		#og_image.convert(image_format)
-		#image_size = og_image.get_size()
-		#read_data = og_image.get_data()
-		#
-		#var tex_read_format := RDTextureFormat.new()
-		#tex_read_format.width = image_size.x
-		#tex_read_format.height = image_size.y
-		#tex_read_format.depth = 4
-		#tex_read_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
-		#tex_read_format.usage_bits = (
-			#RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
-			#| RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT
-		#)
-		#var tex_view := RDTextureView.new()
-		#texture_read = rd.texture_create(tex_read_format, tex_view, [read_data])
-#
-		## Create uniform set using the read texture
-		#var read_uniform := RDUniform.new()
-		#read_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-		#read_uniform.binding = 0
-		#read_uniform.add_id(texture_read)
-#
-		## Initialize write data
-		#write_data = PackedByteArray()
-		#write_data.resize(read_data.size())
-#
-		#var tex_write_format := RDTextureFormat.new()
-		#tex_write_format.width = image_size.x
-		#tex_write_format.height = image_size.y
-		#tex_write_format.depth = 4
-		#tex_write_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
-		#tex_write_format.usage_bits = (
-			#RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
-			#| RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT
-			#| RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
-		#)
-		#texture_write = rd.texture_create(tex_write_format, tex_view, [write_data])
-#
-		## Create uniform set using the write texture
-		#var write_uniform := RDUniform.new()
-		#write_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-		#write_uniform.binding = 1
-		#write_uniform.add_id(texture_write)
-		#
-		## Prepare our data. We use floats in the shader, so we need 32 bit.
-		#var input := PackedFloat32Array([living_cell_lives_with_neighbors_min,living_cell_lives_with_neighbors_max,dead_cell_lives_with_neighbors])
-		#var input_bytes := input.to_byte_array()
-#
-		## Create a storage buffer that can hold our float values.
-		## Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
-		#buffer = rd.storage_buffer_create(input_bytes.size(), input_bytes)
-		#
-		## Create a uniform to assign the buffer to the rendering device
-		#var uniform := RDUniform.new()
-		#uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-		#uniform.binding = 2 # this needs to match the "binding" in our shader file
-		#uniform.add_id(buffer)
-		#
-		#var input_3d_array := PackedInt32Array()
-		#input_3d_array.resize(pow(2*bounds, 3))
-		#input_3d_array.fill(0)
-		#var input_3d_array_bytes := input_3d_array.to_byte_array()
-#
-		## Create a storage buffer that can hold our float values.
-		## Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
-		#buffer_3d_array = rd.storage_buffer_create(input_3d_array_bytes.size(), input_3d_array_bytes)
-#
-		## Create a uniform to assign the buffer to the rendering device
-		#var uniform_3d_array := RDUniform.new()
-		#uniform_3d_array.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-		#uniform_3d_array.binding = 3 # this needs to match the "binding" in our shader file
-		#uniform_3d_array.add_id(buffer_3d_array)
-		#
-		#uniform_set = rd.uniform_set_create([read_uniform, write_uniform, uniform, uniform_3d_array], shader, 0)
-		
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if stop:
+	if global.stop:
 		msh.material.albedo_color = stop_color
 	else:
 		msh.material.albedo_color = go_color
@@ -243,8 +119,10 @@ func _process(delta):
 	if compute_type == 0:
 		_cpu_powered()
 	elif compute_type == 1:
-		if not stop:
+		if not global.stop:
 			_gpu_powered()
+	
+	just_resumed = global.stop
 
 
 func _reset():
@@ -253,10 +131,10 @@ func _reset():
 
 func _cpu_powered():
 	var result = false
-	if not thread.is_alive() and not stop and thread.is_started():
+	if not thread.is_alive() and not global.stop and thread.is_started():
 		result = thread.wait_to_finish()
 		#done = false
-	if result and not stop:
+	if result and not global.stop:
 		time = 0.0
 		thread.start(Callable(self, "_thread_function"))
 		new_blocks = false
@@ -271,30 +149,66 @@ func _cpu_powered():
 
 func _gpu_powered():
 	if tick:
-		gc._sync()
-		
-		var output_bytes := gc.output(0, 1)
-		var output := output_bytes.to_float32_array()
-		
-		# conditional on "just unpaused"
-		gm_from_array(output)
-		
-		var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
+		if not gpu_started:
+			wgsize = bounds*2
+			var num_slots: int = int(pow(wgsize, 3.0))
+			
+			var new_array: PackedFloat32Array = array_from_gm()
+			var slot_bytes := new_array.to_byte_array()
+			
+			var output_array := PackedFloat32Array([])
+			output_array.resize(num_slots)
+			output_array.fill(0.0)
+			var output_bytes := output_array.to_byte_array()
+			
+			var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
 												living_cell_lives_with_neighbors_max,
 												dead_cell_lives_with_neighbors])
-		var param_bytes := param_array.to_byte_array()
-		
-		var new_array: PackedFloat32Array = array_from_gm()
-		var new_array_bytes := new_array.to_byte_array()
-		
-		gc._update_buffer(new_array_bytes, 0, 0)
-		gc._update_buffer(param_bytes, 0, 2)
-		
-		gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize))
-		
-		gc._submit()
-		timer.start(min_time)
-		tick = false
+			var param_bytes := param_array.to_byte_array()
+			
+			gc._add_buffer(0, 0, slot_bytes)
+			gc._add_buffer(0, 1, output_bytes)
+			gc._add_buffer(0, 2, param_bytes)
+			
+			gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize), true)
+			
+			gc._submit()
+			
+			var mem = gc.rd.get_memory_usage(RenderingDevice.MEMORY_TOTAL)
+			
+			mem /= 1000000
+			
+			print("Memory usage: %s MB" % mem)
+			
+			gpu_started = true
+			timer.start(min_time)
+			tick = false
+		else:
+			gc._sync()
+			
+			var output_bytes := gc.output(0, 1)
+			var output := output_bytes.to_float32_array()
+			
+			
+			if not just_resumed:
+				gm_from_array(output)
+			
+			var param_array := PackedFloat32Array([living_cell_lives_with_neighbors_min,
+													living_cell_lives_with_neighbors_max,
+													dead_cell_lives_with_neighbors])
+			var param_bytes := param_array.to_byte_array()
+			
+			var new_array: PackedFloat32Array = array_from_gm()
+			var new_array_bytes := new_array.to_byte_array()
+			
+			gc._update_buffer(new_array_bytes, 0, 0)
+			gc._update_buffer(param_bytes, 0, 2)
+			
+			gc._make_pipeline(Vector3i(wgsize, wgsize, wgsize))
+			
+			gc._submit()
+			timer.start(min_time)
+			tick = false
 
 
 func gm_from_array(arr: PackedFloat32Array):
@@ -355,11 +269,11 @@ func _thread_function():
 	return ['done', fulls, empties]
 
 
-# Thread must be disposed (or "joined"), for portability.
 func _exit_tree():
 	if compute_type == 0:
 		thread.wait_to_finish()
-	
+
+
 func get_neighbors(x,y,z):
 	var loc_xL = Vector3(x-1,y,z)
 	var loc_xLyL = Vector3(x-1,y-1,z)
@@ -406,7 +320,8 @@ func get_neighbors_search(loc: Vector3i):
 	for n in neighbors:
 		wrapped_neighbors.append(wrap_loc(n,bounds))
 	return wrapped_neighbors
-	
+
+
 func wrap_loc(loc, boundaries):
 	if loc.x < -boundaries:
 		loc.x = boundaries
@@ -421,7 +336,8 @@ func wrap_loc(loc, boundaries):
 	if loc.z > boundaries:
 		loc.z = -boundaries
 	return loc
-	
+
+
 func find_nearest_living_cell(location, del):
 	# check for thread issues in this function
 	var l_int = Vector3i(location)
@@ -434,11 +350,13 @@ func find_nearest_living_cell(location, del):
 			emit_signal("clear_cell", l_int)
 		if Input.is_action_pressed("shift"):
 			expanding_search(l_int, expanding_search_exclude, del)
-	
+
+
 func _on_node3d_rayhit(loc, del):
 	var hit = local_to_map(loc)
 	find_nearest_living_cell(hit, del)
-	
+
+
 func _on_node3d_build_new_block(loc):
 	mutex.lock()
 	var new_loc = local_to_map(loc)
@@ -453,7 +371,8 @@ func _on_node3d_build_new_block(loc):
 		set_cell_item(new_loc,0)
 	mutex.unlock()
 	new_blocks = true
-		
+
+
 func _on_node3d_delete_block(loc):
 	mutex.lock()
 	var new_loc = local_to_map(loc)
@@ -468,26 +387,12 @@ func _on_node3d_delete_block(loc):
 		set_cell_item(new_loc,-1)
 	mutex.unlock()
 	new_blocks = true
-		
 
-#func _on_node3d_buildRay(loc):
-#	var hit = local_to_map(loc)
-#	var to_clear = get_used_cells_by_item(2)
-#	var occupied = get_used_cells_by_item(0)
-#	for tc in to_clear:
-#		if tc in occupied or tc == hit:
-#			pass
-#		else:
-#			set_cell_item(tc,-1)
-#	var hitbounds = bounds - 1
-#	hit.x = clamp(hit.x,-hitbounds,hitbounds)
-#	hit.y = clamp(hit.y,-hitbounds,hitbounds)
-#	hit.z = clamp(hit.z,-hitbounds,hitbounds)
-#	buildCursor = hit
-	
+
 func clear_build_cursor():
 	pass
-	
+
+
 func expanding_search(cell: Vector3i, exclude: Array = [], del: bool = false):
 	for fc in full_cell_array:
 		if fc not in exclude:

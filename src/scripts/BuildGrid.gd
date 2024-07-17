@@ -8,13 +8,15 @@ signal wall_go_here(loc)
 var buildCursor: Vector3i
 var bounds: int
 
+var global: Node
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	global = get_node("/root/Global")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if node_3d.build:
+	if global.build:
 		set_cell_item(buildCursor,0)
 
 func _on_node_3d_build_ray(loc):
